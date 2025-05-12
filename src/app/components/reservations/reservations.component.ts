@@ -36,7 +36,7 @@ export class ReservationsComponent implements OnInit {
   displayedColumns: string[] = ['fullName', 'guests', 'roomType', 'dates', 'paymentMethod', 'actions'];
   editingIndex = signal<number | null>(null);
   roomTypes = ['Celestial Suite', 'Mystic Forest Suite', 'Golden Horizon Suite', 'Otro'];
-  paymentMethods = ['tarjeta', 'efectivo', 'transferencia'];
+  paymentMethods = ['tarjeta', 'efectivo'];
   today = new Date();
 
   ngOnInit(): void {
@@ -57,6 +57,10 @@ export class ReservationsComponent implements OnInit {
     this.reservations.set(formattedReservations);
   }
 
+  isValidName(name: string) {
+    return name && name.trim().length >= 3 && /^[a-zA-Z\s]+$/.test(name);
+  }
+
   isCheckOutBeforeCheckIn(checkIn: Date | string, checkOut: Date | string): boolean {
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
@@ -70,6 +74,19 @@ export class ReservationsComponent implements OnInit {
   }
 
   validateReservation(reservation: Reservation): boolean {
+    if (!this.isValidName(reservation.fullName)) {
+      Swal.fire({
+        title: 'Error',
+        text: 'El nombre debe tener al menos 3 letras y solo contener caracteres válidos',
+        icon: 'error',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#B23B3B',
+        confirmButtonColor: '#A9745D'
+      });
+      return false;
+    }
+
     if (reservation.guests < 1 || reservation.guests > 5) {
       Swal.fire({
         title: 'Error',

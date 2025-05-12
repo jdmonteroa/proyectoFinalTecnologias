@@ -8,9 +8,9 @@ import { Component } from '@angular/core';
 })
 export class CollageComponent {
   images = [
-    '/img/collage1.jpeg',
-    '/img/collage2.jpeg',
-    '/img/collage3.jpeg'
+    'img/collage1.jpeg',
+    'img/collage2.jpeg',
+    'img/collage3.jpeg'
   ];
 
   selectedImage = this.images[0]; // Mostrar la primera al cargar

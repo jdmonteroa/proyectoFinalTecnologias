@@ -1,0 +1,10 @@
+<div class="search-container">
+  <input
+    type="text"
+    placeholder="¿Qué actividad estás buscando?"
+    [(ngModel)]="textoBusqueda"
+    (keyup.enter)="emitirBusqueda()" />
+
+  <button (click)="emitirBusqueda()">Buscar</button>
+</div>
+

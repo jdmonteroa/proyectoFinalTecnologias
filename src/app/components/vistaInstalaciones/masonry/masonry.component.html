@@ -1,0 +1,15 @@
+
+<div class="masonry-container">
+    @for (row of rows; track $index) {
+      <div class="masonry-row" [style.animationDuration]="animationDuration + 's'">
+        @for (img of row; track $index) {
+          <div class="masonry-item">
+            <img [src]="img" alt="cute image" />
+          </div>
+        }
+      </div>
+    }
+  </div>
+<br>
+<br>
+  

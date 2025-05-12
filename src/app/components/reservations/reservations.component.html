@@ -1,0 +1,125 @@
+<div class="container">
+    <h2>Lista de Reservaciones</h2>
+  
+    @if (reservations().length === 0) {
+      <div class="no-reservations">
+        <mat-icon>hotel</mat-icon>
+        <p>Aún no hay reservaciones registradas</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table mat-table [dataSource]="reservations()" class="mat-elevation-z8">
+  
+          <!-- Nombre -->
+          <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef>Nombre</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <input [(ngModel)]="element.fullName" />
+              } @else {
+                {{ element.fullName }}
+              }
+            </td>
+          </ng-container>
+  
+          <!-- Huéspedes -->
+          <ng-container matColumnDef="guests">
+            <th mat-header-cell *matHeaderCellDef>Huéspedes</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <input type="number" [(ngModel)]="element.guests" min="1" />
+              } @else {
+                {{ element.guests }}
+              }
+            </td>
+          </ng-container>
+  
+          <!-- Habitación -->
+          <ng-container matColumnDef="roomType">
+            <th mat-header-cell *matHeaderCellDef>Habitación</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <input [(ngModel)]="element.roomType" />
+              } @else {
+                {{ element.roomType }}
+              }
+            </td>
+          </ng-container>
+  
+          <!-- Fechas -->
+          <ng-container matColumnDef="dates">
+            <th mat-header-cell *matHeaderCellDef>Fechas</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <div>
+                  <label>Entrada:</label>
+                  <input type="date" [(ngModel)]="element.checkInDate" />
+                </div>
+                <div>
+                  <label>Salida:</label>
+                  <input type="date" [(ngModel)]="element.checkOutDate" />
+                </div>
+              } @else {
+                {{ getFormattedDate(element.checkInDate) }} - {{ getFormattedDate(element.checkOutDate) }}
+                <br />
+                <small>({{ getNightsCount(element.checkInDate, element.checkOutDate) }} noches)</small>
+              }
+            </td>
+          </ng-container>
+  
+          <!-- Pago -->
+          <ng-container matColumnDef="paymentMethod">
+            <th mat-header-cell *matHeaderCellDef>Pago</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <select [(ngModel)]="element.paymentMethod">
+                  <option value="tarjeta">Tarjeta</option>
+                  <option value="efectivo">Efectivo</option>
+                  <option value="transferencia">Transferencia</option>
+                </select>
+              } @else {
+                @switch (element.paymentMethod) {
+                  @case ('tarjeta') { Tarjeta }
+                  @case ('efectivo') { Efectivo }
+                  @case ('transferencia') { Transferencia }
+                  @default { {{ element.paymentMethod }} }
+                }
+              }
+            </td>
+          </ng-container>
+  
+          <!-- Acciones -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <button mat-icon-button color="primary" (click)="saveEdit(i)" matTooltip="Guardar">
+                  <mat-icon>check</mat-icon>
+                </button>
+                <button mat-icon-button (click)="cancelEdit()" matTooltip="Cancelar">
+                  <mat-icon>close</mat-icon>
+                </button>
+              } @else {
+                <button mat-icon-button color="primary" (click)="startEdit(i)" matTooltip="Editar">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteReservation(i)" matTooltip="Eliminar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+      <div class="mt-4">
+        <button mat-raised-button color="warn" (click)="clearAll()">
+          <mat-icon>delete_forever</mat-icon>
+          Limpiar todas las reservaciones
+        </button>
+      </div>
+    }
+  </div>
+  

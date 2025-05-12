@@ -1,0 +1,17 @@
+.team-footer {
+  text-align: center;
+  width: 100%;
+  padding-top: 3rem;
+  margin-top: auto;
+  border-top: 1px solid #DED1BA;
+}
+
+.team-footer p:first-child {
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.team-footer p:last-child {
+  font-size: 0.8rem;
+}

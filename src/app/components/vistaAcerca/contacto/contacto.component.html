@@ -1,0 +1,74 @@
+<form #formulario="ngForm" (ngSubmit)="enviarFormulario(formulario)">
+    <h1>Mantente en contacto</h1>
+  
+    @for (campo of camposTexto; track campo.nombre) {
+      <label [ngStyle]="{ color: input?.invalid && input?.touched ? '#d24e40' : '#594639' }">
+        {{ campo.etiqueta }}
+      </label>
+      <input
+        [(ngModel)]="datos[campo.nombre]"
+        name="{{ campo.nombre }}"
+        #input="ngModel"
+        required
+        minlength="3"
+        [ngClass]="{ 'border-red-500': input.invalid && input.touched, 'border-green-500': input.valid }"
+      />
+      @if (input.invalid && input.touched) {
+        <div class="text-red-500 text-sm">
+          @if (input.errors?.['required']) {
+            <div>{{ campo.etiqueta }} es obligatorio</div>
+          }
+          @if (input.errors?.['minlength']) {
+            <div>{{ campo.etiqueta }} debe tener al menos 3 caracteres</div>
+          }
+        </div>
+      }
+    }
+  
+    <label [ngStyle]="{ color: correo?.invalid && correo?.touched ? '#d24e40' : '#594639' }">Correo</label>
+    <input
+      type="email"
+      [(ngModel)]="datos.correo"
+      name="correo"
+      #correo="ngModel"
+      required
+      pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+      [ngClass]="{ 'border-red-500': correo.invalid && correo.touched }"
+    />
+    @if (correo.invalid && correo.touched) {
+      <div class="text-red-500 text-sm">
+        @if (correo.errors?.['required']) {
+          <div>El correo es obligatorio</div>
+        }
+        @if (correo.errors?.['pattern']) {
+          <div>Formato de correo no válido</div>
+        }
+      </div>
+    }
+  
+    <label [ngStyle]="{ color: mensaje?.invalid && mensaje?.touched ? '#d24e40' : '#594639' }">Mensaje</label>
+    <textarea
+      [(ngModel)]="datos.mensaje"
+      name="mensaje"
+      #mensaje="ngModel"
+      required
+      minlength="10"
+      [ngClass]="{ 'border-red-500': mensaje.invalid && mensaje.touched }"
+    ></textarea>
+    @if (mensaje.invalid && mensaje.touched) {
+      <div class="text-red-500 text-sm">
+        @if (mensaje.errors?.['required']) {
+          <div>El mensaje es obligatorio</div>
+        }
+        @if (mensaje.errors?.['minlength']) {
+          <div>Debe tener al menos 10 caracteres</div>
+        }
+      </div>
+    }
+  
+    <button type="submit" [disabled]="formulario.invalid" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+      Enviar
+    </button>
+  </form>
+  
+  

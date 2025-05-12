@@ -1,0 +1,8 @@
+<div class="actividades-card">
+    <img [src]="imagen" [alt]="nombre" />
+    <h3>{{ nombre }}</h3>
+    <p>{{ descripcion }}</p>
+    <a [routerLink]="['/actividad', idActividad]" class="btn-vermas">
+    Ver más
+  </a>
+</div>

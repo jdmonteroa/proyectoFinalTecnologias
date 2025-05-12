@@ -1,0 +1,81 @@
+.detalle-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #f7f1eb;
+    /* fondo claro café */
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(92, 64, 51, 0.2);
+    flex-wrap: wrap;
+    /* para que en pantallas pequeñas se apile */
+}
+
+.detalle-imagen {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 6px 12px rgba(92, 64, 51, 0.3);
+}
+
+.detalle-texto {
+    flex: 1;
+    min-width: 300px;
+    color: #4e342e;
+    /* café oscuro */
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.detalle-texto h2 {
+    font-weight: bold;
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    color: #5B4C3A;
+}
+
+.detalle-texto p {
+    color: #5B4C3A;;
+    font-weight: 600px;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
+}
+
+.detalle-texto strong {
+    color: #6d4c41;
+}
+
+.cta-reservacion {
+  background-color: #f3ede5;
+  text-align: center;
+  padding: 20px;
+  margin: 30px auto 0;
+  border-radius: 12px;
+  max-width: 600px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  color: #4b3b2c;
+}
+
+.cta-reservacion p {
+  font-size: 1.2em;
+  margin-bottom: 12px;
+}
+
+.btn-reservar {
+  background-color: #8c765d;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-reservar:hover {
+  background-color: #6f5e4a;
+}

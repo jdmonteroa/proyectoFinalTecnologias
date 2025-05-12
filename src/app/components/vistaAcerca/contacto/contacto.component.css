@@ -1,0 +1,84 @@
+form {
+    font-family: 'Segoe UI', sans-serif;
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #dfd1bb;
+    color:#594639;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+
+h1{
+    font-weight: bold;
+    font-size: 25px;
+    text-align: center;
+}
+  
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    margin-top: 1.2rem;
+    transition: color 0.3s ease;
+}
+  
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+    box-sizing: border-box;
+  }
+  
+input:focus,
+textarea:focus {
+    border-color: #594639;
+    box-shadow: 0 0 0 2px rgba(52, 29, 17, 0.2);
+}
+  
+
+  
+.error-message {
+    color: #d24e40;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+  
+button {
+    margin-top: 1.5rem;
+    background-color: #594639;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+  
+button:hover:not(:disabled) {
+    background-color: #594639;
+}
+  
+button:disabled {
+    background-color: #554440;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+  
+
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border: 2px solid #d24e40;
+}
+input.ng-valid.ng-touched,
+textarea.ng-valid.ng-touched {
+  border: 2px solid rgb(48, 107, 115);
+}

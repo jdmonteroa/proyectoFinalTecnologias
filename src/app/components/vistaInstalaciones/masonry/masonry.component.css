@@ -1,0 +1,35 @@
+.masonry-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.masonry-row {
+  display: flex;
+  gap: 8px;
+  width: fit-content;
+  min-width: 200%;
+  animation: scrollLeft linear infinite;
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.masonry-item {
+  flex-shrink: 0;
+}
+
+.masonry-item img {
+  height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+}

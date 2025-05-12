@@ -1,0 +1,41 @@
+<div class="login-container mat-elevation-z8">
+    <button mat-icon-button class="close-button" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+    </button>
+    <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <div class="form-header">
+            <h2 class="mat-headline-5">Bienvenido</h2>
+            <p class="subtitle mat-body-1">Por favor inicia sesión para continuar</p>
+            <div class="divider"></div>
+        </div>
+        <mat-form-field appearance="outline" class="form-group">
+            <mat-label>Nombre completo</mat-label>
+            <input matInput type="text" name="nombre" [(ngModel)]="nombre" required #nombreCtrl="ngModel">
+            <mat-icon matPrefix>person</mat-icon>
+            @if (nombreCtrl.invalid && nombreCtrl.touched) {
+            <mat-error>El nombre es obligatorio</mat-error>
+            }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-group">
+            <mat-label>Nombre de usuario</mat-label>
+            <input matInput type="text" name="username" [(ngModel)]="username" required #usernameCtrl="ngModel">
+            <mat-icon matPrefix>account_circle</mat-icon>
+            @if (usernameCtrl.invalid && usernameCtrl.touched) {
+            <mat-error>El nombre de usuario es obligatorio</mat-error>
+            }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-group">
+            <mat-label>Contraseña</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" name="password"
+            [(ngModel)]="password" required #passwordCtrl="ngModel">
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            </button>
+            @if (passwordCtrl.invalid && passwordCtrl.touched) {
+            <mat-error>La contraseña es obligatoria</mat-error>
+            }
+        </mat-form-field>
+        <button mat-raised-button type="submit" class="submit-btn" color="primary" [disabled]="!loginForm.form.valid">
+            Ingresar
+        </button>
+    </form>
+</div>

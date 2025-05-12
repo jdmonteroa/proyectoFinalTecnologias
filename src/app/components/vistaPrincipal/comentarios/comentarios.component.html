@@ -1,0 +1,12 @@
+<section class="testimonios">
+    <h2 class="titulo">Lo Que Dicen Nuestros Huéspedes</h2>
+    <div class="contenedor-testimonios">
+      @for (review of reviews; track review.nombre) {
+        <div class="tarjeta">
+          <p class="comentario">“{{ review.descripcion }}”</p>
+          <p class="autor">— {{ review.nombre }}</p>
+        </div>
+      }
+    </div>
+</section>
+  

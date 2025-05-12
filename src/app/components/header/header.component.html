@@ -1,0 +1,24 @@
+<header class="header">
+    <div class="logo">
+      <a routerLink="/home" routerLinkActive="active">
+        <img src="/logoFondoClaro.png" width="70" height="40">
+        <span class="brand">Terra<span class="sabio">Essence</span></span>
+      </a>
+    </div>
+  
+    @if (!usuarioActual) {
+      <button (click)="openLoginModal()" class="login-btn">
+        <span class="btn-text">Iniciar sesión</span>
+        <span class="btn-icon">
+          <mat-icon>login</mat-icon>
+        </span>
+      </button>
+    } @else {
+      <div class="user-info">
+        <span class="user-name">Hola, {{ usuarioActual.name }}</span>
+        <button mat-icon-button (click)="cerrarSesion()" title="Cerrar sesión" class="logout-btn">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+    }
+</header>

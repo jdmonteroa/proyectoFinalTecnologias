@@ -1,0 +1,49 @@
+.testimonios {
+    /* tono neutro cálido */
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.titulo {
+    font-size: 2rem;
+    color: #5a4b3b;
+    /* café oscuro */
+    margin-bottom: 2rem;
+    font-weight: bold;
+}
+
+.contenedor-testimonios {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.tarjeta {
+    background-color: #fffaf5;
+    border: 1px solid #e0d8cc;
+    box-shadow: 0 4px 10px rgba(90, 75, 59, 0.15);
+    /* sombra café */
+    border-radius: 10px;
+    padding: 1.5rem;
+    max-width: 300px;
+    flex: 1 1 250px;
+    transition: transform 0.3s;
+}
+
+.tarjeta:hover {
+    transform: translateY(-5px);
+}
+
+.comentario {
+    font-style: italic;
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    color: #4e3e2f;
+    margin-bottom: 1rem;
+}
+
+.autor {
+    font-weight: 600;
+    color: #7a6955;
+}

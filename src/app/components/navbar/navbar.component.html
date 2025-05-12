@@ -1,0 +1,22 @@
+<nav class="navbar">
+    <div class="navbar-container">
+        <ul class="nav-links">
+            <li><a routerLink="/home" routerLinkActive="active">
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home"></mat-icon>
+            </a></li>
+            <li><a routerLink="/instalaciones" routerLinkActive="active">Instalaciones</a></li>
+            @if(user$ | async; as user) {
+                <li><a routerLink="/tab" routerLinkActive="active">Administracion</a></li>
+            } @else {
+                <li><a routerLink="/reservaciones" routerLinkActive="active">Reservaciones</a></li>
+            }
+            <li><a routerLink="/actividades" routerLinkActive="active">Actividades</a></li>
+            <li><a routerLink="/desa" >Desarrolladores</a></li>
+            @if(user$ | async; as user) {
+                <li><a routerLink="/contact" routerLinkActive="active">Mensajes Clientes</a></li>
+            } @else {
+                <li><a routerLink="/acerca" routerLinkActive="active">Acerca de</a></li>
+            }
+        </ul>
+    </div>
+</nav>

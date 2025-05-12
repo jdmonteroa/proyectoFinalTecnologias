@@ -1,0 +1,15 @@
+#carouselExampleInterval {
+    max-height: 500px;
+    /* Puedes ajustar este valor */
+    overflow: hidden;
+}
+
+/* Las imágenes ocuparán todo el ancho pero con altura controlada */
+#carouselExampleInterval img {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    /* Limita la altura */
+    object-fit: cover;
+    /* Mantiene proporción y rellena el espacio */
+}

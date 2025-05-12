@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Segoe+UI&display=swap');
+
+.login-container {
+    background-color: rgba(222, 209, 186, 0.95);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #B9A88F;
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-header {
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.form-header h2 {
+    color: #5B4C3A;
+    font-size: 24px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.5px;
+}
+
+.subtitle {
+    color: #7A6954;
+    margin-bottom: 16px;
+    font-style: italic;
+}
+
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #B9A88F, transparent);
+    margin: 0 auto 16px;
+    width: 50%;
+}
+
+.form-group {
+    width: 100%;
+}
+
+.close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #5B4C3A;
+}
+
+.submit-btn {
+    margin: 0 auto;
+    background-color: #463c30;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(91, 76, 58, 0.3);
+}
+
+.submit-btn:hover {
+    background-color: #907a62;
+    transform: translateY(-2px);
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #B9A88F;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: #5B4C3A !important;
+}
+
+::ng-deep .mat-form-field-label {
+    color: #5B4C3A !important;
+}
+
+::ng-deep .mat-focused .mat-form-field-label {
+    color: #5B4C3A !important;
+}
+
+::ng-deep .mat-input-element {
+    caret-color: #5B4C3A !important;
+}
+
+::ng-deep .mat-raised-button.mat-primary {
+    background-color: #5B4C3A;
+}
+
+::ng-deep .mat-raised-button.mat-primary:hover {
+    background-color: #3e342a;
+}
+::ng-deep .mat-form-field .mat-prefix {
+    margin-right: 15px; 
+}

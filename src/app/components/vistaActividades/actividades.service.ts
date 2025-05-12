@@ -7,7 +7,7 @@ import { Actividades } from './actividades';
   providedIn: 'root'
 })
 export class ActividadesService {
-  apiUrl = 'https://actividadeshotel.free.beeceptor.com/';
+  apiUrl = 'https://hotelactividades.free.beeceptor.com/';
 
   constructor(private http: HttpClient) {}
 

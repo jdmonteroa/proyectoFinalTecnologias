@@ -119,16 +119,24 @@ export class FormReactivoComponent {
     return timeDiff > 0 ? Math.ceil(timeDiff / (1000 * 3600 * 24)) : 0;
   }
 
+  maxGuestsReached = false; // declara esto en la clase
+  minGuestsReached = true; //
+
   increase(controlName: string): void {
     const control = this.reservationForm.get(controlName);
     if (control) {
       const current = control.value || 0;
-      if (current < 5) { // <-- aquí se limita manualmente también
+      if (current < 5) {
         control.setValue(current + 1);
-        control.markAsTouched(); // Para mostrar errores si ya es inválido
+        control.markAsTouched();
+        this.maxGuestsReached = false; // Oculta el mensaje si ya no está en el límite
+      } else {
+        this.maxGuestsReached = true; // Muestra el mensaje al intentar pasar de 5
+        setTimeout(() => this.maxGuestsReached = false, 3000); // Oculta tras 3s (opcional)
       }
     }
   }
+
 
   decrease(controlName: string): void {
     const control = this.reservationForm.get(controlName);
@@ -137,6 +145,9 @@ export class FormReactivoComponent {
       if (current > 1) {
         control.setValue(current - 1);
         control.markAsTouched();
+      } else {
+        this.minGuestsReached = true;
+        setTimeout(() => this.minGuestsReached = false, 3000); // se oculta después de 3 segundos
       }
     }
   }
@@ -149,41 +160,41 @@ export class FormReactivoComponent {
     const pricePerNight = this.roomPrices[room] || 0;
     this.total = pricePerNight * nights * guests;
   }
-  
+
   confirm(): void {
-  if (this.reservationForm.valid) {
-    const nuevaReserva = this.reservationForm.value;
-    const reservasGuardadas = JSON.parse(localStorage.getItem('reservas') || '[]');
-    reservasGuardadas.push(nuevaReserva);
-    localStorage.setItem('reservas', JSON.stringify(reservasGuardadas));
+    if (this.reservationForm.valid) {
+      const nuevaReserva = this.reservationForm.value;
+      const reservasGuardadas = JSON.parse(localStorage.getItem('reservas') || '[]');
+      reservasGuardadas.push(nuevaReserva);
+      localStorage.setItem('reservas', JSON.stringify(reservasGuardadas));
 
-    Swal.fire({
-      title: '¡Reservación exitosa!',
-      text: 'Tus datos han sido guardados.',
-      icon: 'success',
-      background: '#fffaf3',
-      color: '#5B4C3A',
-      iconColor: '#5B4C3A',
-      confirmButtonColor: '#A9745D',
-      confirmButtonText: 'Aceptar'
-    });
+      Swal.fire({
+        title: '¡Reservación exitosa!',
+        text: 'Tus datos han sido guardados.',
+        icon: 'success',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#5B4C3A',
+        confirmButtonColor: '#A9745D',
+        confirmButtonText: 'Aceptar'
+      });
 
-    this.reservationForm.reset();
-    this.reservationForm.patchValue({ guests: 1 });
-    this.total = 0;
-  } else {
-    Swal.fire({
-      title: 'Error',
-      text: 'Por favor completa todos los campos correctamente.',
-      icon: 'error',
-      background: '#fffaf3',
-      color: '#5B4C3A',
-      iconColor: '#B23B3B',
-      confirmButtonColor: '#A9745D',
-      confirmButtonText: 'Entendido'
-    });
+      this.reservationForm.reset();
+      this.reservationForm.patchValue({ guests: 1 });
+      this.total = 0;
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: 'Por favor completa todos los campos correctamente.',
+        icon: 'error',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#B23B3B',
+        confirmButtonColor: '#A9745D',
+        confirmButtonText: 'Entendido'
+      });
+    }
   }
-}
 
 }
 

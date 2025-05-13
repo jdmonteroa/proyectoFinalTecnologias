@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-form-reactivo',
+  standalone: true,
   imports: [ReactiveFormsModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatButtonModule],
   templateUrl: './form-reactivo.component.html',
   styleUrls: ['./form-reactivo.component.css']
@@ -58,7 +59,8 @@ export class FormReactivoComponent {
         null,
         [
           Validators.required,
-          this.futureDateValidator
+          this.futureDateValidator,
+          this.weekendValidator
         ]
       ],
       checkOutDate: [
@@ -75,6 +77,8 @@ export class FormReactivoComponent {
           Validators.pattern(/^(efectivo|tarjeta)$/i)
         ]
       ]
+    }, {
+      validators: [this.minStayValidator.bind(this)]
     });
 
     this.reservationForm.get('checkInDate')?.valueChanges.subscribe((date: Date) => {
@@ -92,7 +96,7 @@ export class FormReactivoComponent {
     });
   }
 
-  // Validación: fecha debe ser hoy o futura
+  // ✅ Validación: fecha debe ser hoy o futura
   futureDateValidator(control: AbstractControl): ValidationErrors | null {
     const inputDate = new Date(control.value);
     const today = new Date();
@@ -100,7 +104,14 @@ export class FormReactivoComponent {
     return inputDate < today ? { dateInPast: true } : null;
   }
 
-  // Validación: check-out > check-in
+  // ✅ Validación: no permitir check-in en fin de semana
+  weekendValidator(control: AbstractControl): ValidationErrors | null {
+    const date = new Date(control.value);
+    const day = date.getDay();
+    return (day === 0 || day === 6) ? { weekend: true } : null;
+  }
+
+  // ✅ Validación: check-out > check-in
   laterThanCheckInValidator(control: AbstractControl): ValidationErrors | null {
     const checkIn = this.reservationForm?.get('checkInDate')?.value;
     const checkOut = control.value;
@@ -112,6 +123,18 @@ export class FormReactivoComponent {
     return null;
   }
 
+  // ✅ Validación: estancia mínima de 2 noches
+  minStayValidator(group: AbstractControl): ValidationErrors | null {
+    const checkIn = new Date(group.get('checkInDate')?.value);
+    const checkOut = new Date(group.get('checkOutDate')?.value);
+    if (!checkIn || !checkOut) return null;
+
+    const diffTime = checkOut.getTime() - checkIn.getTime();
+    const diffDays = diffTime / (1000 * 3600 * 24);
+
+    return diffDays < 2 ? { minStay: true } : null;
+  }
+
   getNumberOfNights(): number {
     const checkIn = new Date(this.reservationForm.get('checkInDate')?.value);
     const checkOut = new Date(this.reservationForm.get('checkOutDate')?.value);
@@ -119,8 +142,8 @@ export class FormReactivoComponent {
     return timeDiff > 0 ? Math.ceil(timeDiff / (1000 * 3600 * 24)) : 0;
   }
 
-  maxGuestsReached = false; // declara esto en la clase
-  minGuestsReached = true; //
+  maxGuestsReached = false;
+  minGuestsReached = true;
 
   increase(controlName: string): void {
     const control = this.reservationForm.get(controlName);
@@ -129,14 +152,13 @@ export class FormReactivoComponent {
       if (current < 5) {
         control.setValue(current + 1);
         control.markAsTouched();
-        this.maxGuestsReached = false; // Oculta el mensaje si ya no está en el límite
+        this.maxGuestsReached = false;
       } else {
-        this.maxGuestsReached = true; // Muestra el mensaje al intentar pasar de 5
-        setTimeout(() => this.maxGuestsReached = false, 3000); // Oculta tras 3s (opcional)
+        this.maxGuestsReached = true;
+        setTimeout(() => this.maxGuestsReached = false, 3000);
       }
     }
   }
-
 
   decrease(controlName: string): void {
     const control = this.reservationForm.get(controlName);
@@ -147,7 +169,7 @@ export class FormReactivoComponent {
         control.markAsTouched();
       } else {
         this.minGuestsReached = true;
-        setTimeout(() => this.minGuestsReached = false, 3000); // se oculta después de 3 segundos
+        setTimeout(() => this.minGuestsReached = false, 3000);
       }
     }
   }
@@ -195,8 +217,8 @@ export class FormReactivoComponent {
       });
     }
   }
-
 }
+
 
 
 

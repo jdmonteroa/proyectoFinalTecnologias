@@ -54,10 +54,15 @@
     <input matInput [matDatepicker]="picker1" formControlName="checkInDate" [min]="today" />
     <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
     <mat-datepicker #picker1></mat-datepicker>
+
     @if (reservationForm.get('checkInDate')?.hasError('required') && reservationForm.get('checkInDate')?.touched) {
     <mat-error>Selecciona una fecha de llegada.</mat-error>
     }
+    @if (reservationForm.get('checkInDate')?.hasError('weekend') && reservationForm.get('checkInDate')?.touched) {
+    <mat-error>No se permite check-in en fines de semana.</mat-error>
+    }
   </mat-form-field>
+
 
   <!-- Fecha de salida -->
   <mat-form-field appearance="fill">
@@ -65,12 +70,16 @@
     <input matInput [matDatepicker]="picker2" formControlName="checkOutDate" [min]="minCheckOutDate" />
     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
     <mat-datepicker #picker2></mat-datepicker>
+
     @if (reservationForm.get('checkOutDate')?.hasError('required') && reservationForm.get('checkOutDate')?.touched) {
     <mat-error>Selecciona una fecha de salida.</mat-error>
     }
     @if (reservationForm.get('checkOutDate')?.hasError('checkOutBeforeCheckIn') &&
     reservationForm.get('checkOutDate')?.touched) {
     <mat-error>La salida debe ser después de la entrada.</mat-error>
+    }
+    @if (reservationForm.get('checkOutDate')?.hasError('minStay') && reservationForm.get('checkOutDate')?.touched) {
+    <mat-error>La estancia mínima es de 2 noches.</mat-error>
     }
   </mat-form-field>
 

@@ -15,4 +15,4 @@ export class BuscarComponent {
     const texto = this.textoBusqueda.trim().toLowerCase();
     this.buscar.emit(texto);
   }
-}
+} 

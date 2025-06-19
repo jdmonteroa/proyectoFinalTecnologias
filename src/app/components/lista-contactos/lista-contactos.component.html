@@ -1,0 +1,82 @@
+<div class="container">
+    <h2>Contactos Registrados</h2>
+    @if (contacts().length === 0) {
+      <div class="no-reservations">
+        <mat-icon>contact_mail</mat-icon>
+        <p>No hay contactos registrados</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table mat-table [dataSource]="contacts()" class="mat-elevation-z8">
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef>Nombre</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <input [(ngModel)]="element.nombre" />
+              } @else {
+                {{ element.nombre }}
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="apellido">
+            <th mat-header-cell *matHeaderCellDef>Apellido</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <input [(ngModel)]="element.apellido" />
+              } @else {
+                {{ element.apellido }}
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="correo">
+            <th mat-header-cell *matHeaderCellDef>Correo</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <input type="email" [(ngModel)]="element.correo" />
+              } @else {
+                {{ element.correo }}
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="mensaje">
+            <th mat-header-cell *matHeaderCellDef>Mensaje</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <textarea [(ngModel)]="element.mensaje"></textarea>
+              } @else {
+                {{ element.mensaje }}
+              }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              @if (editingIndex() === i) {
+                <button mat-icon-button color="primary" (click)="saveEdit(i)" matTooltip="Guardar">
+                  <mat-icon>check</mat-icon>
+                </button>
+                <button mat-icon-button (click)="cancelEdit()" matTooltip="Cancelar">
+                  <mat-icon>close</mat-icon>
+                </button>
+              } @else {
+                <button mat-icon-button color="primary" (click)="startEdit(i)" matTooltip="Editar">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteContact(i)" matTooltip="Eliminar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+      <div class="mt-4">
+        <button mat-raised-button color="warn" (click)="clearAll()">
+          <mat-icon>delete_forever</mat-icon>
+          Limpiar todos los contactos
+        </button>
+      </div>
+    }
+</div>

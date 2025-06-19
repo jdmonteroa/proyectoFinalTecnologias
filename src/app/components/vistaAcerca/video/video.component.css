@@ -1,0 +1,28 @@
+.pipes-section {
+  background-color: #dfd0ba; 
+  padding: 2rem;
+  margin: 2rem auto;
+  text-align: center;
+  max-width: 800px;
+  border-radius: 7px;
+}
+
+.pipes-title {
+  color: #6e5b47;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+iframe{
+    border-radius: 7px;
+}

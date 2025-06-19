@@ -1,0 +1,18 @@
+<div class="grid-container">
+    @for (habitacion of habitaciones; track habitacion) {
+      <div class="card-row" [class.reverse]="$index % 2 !== 0">
+        <mat-card class="card text-card">
+          <mat-card-title>{{ habitacion.nombre }}</mat-card-title>
+          <mat-card-content>{{ habitacion.descripcion }}</mat-card-content>
+          <a routerLink="/reservaciones"><button mat-raised-button class="cafe-button" >Reservar</button></a>
+          
+        </mat-card>
+        <mat-card class="card image-card">
+          <img mat-card-image [src]="habitacion.imagen" alt="{{ habitacion.nombre }}">
+        </mat-card>
+      </div>
+    }
+  </div>
+  <br>
+<br>
+  

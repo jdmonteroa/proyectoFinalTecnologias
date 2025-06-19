@@ -1,0 +1,57 @@
+.grid-actividades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.grid-actividades .actividades-card {
+  flex: 1 1 30%; /* Esto asegura que cada tarjeta ocupe un 30% del ancho del contenedor */
+  box-sizing: border-box; /* Incluye el padding y border dentro del cálculo del ancho */
+}
+
+.actividad-card {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.mensaje {
+  margin: 30px auto;
+  padding: 16px 24px;
+  max-width: 600px;
+  text-align: center;
+  background-color: #f3e8dc; /* Fondo beige claro, tipo papel */
+  color: #473f38; /* Café oscuro (el mismo de tu botón) */
+  border-left: 6px solid #a67c52; /* Acento café tostado */
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.volver-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.btn-volver {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 30px;
+  background-color: #473f38; /* Café oscuro */
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-volver:hover {
+  background-color: #5c4b3b;
+  transform: scale(1.05);
+}
+
+
+

@@ -1,0 +1,64 @@
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .card-row {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  
+  .card-row.reverse {
+    flex-direction: row-reverse;
+  }
+  
+  .card {
+    flex: 1;
+  }
+  
+  .image-card img {
+    height: 100%;
+    object-fit: cover;
+    max-height: 350px;
+  }
+  
+  .text-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background-color: #fefefe;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-card mat-card-title {
+    font-size: 1.8rem;
+    color: #5a4d3a;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .text-card mat-card-content {
+    font-size: 1rem;
+    color: #685750;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .cafe-button {
+    background-color: #8b7560 !important; 
+    color: white !important;
+    width: 100%;             
+  }
+  
+  .cafe-button:hover {
+    background-color: #5a4d3a !important;
+  }
+  

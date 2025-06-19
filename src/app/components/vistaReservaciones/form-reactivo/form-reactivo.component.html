@@ -1,0 +1,107 @@
+<div class="form" [formGroup]="reservationForm">
+  <h3>Reservación</h3>
+
+  <!-- Nombre completo -->
+  <mat-form-field appearance="fill">
+    <mat-label>Nombre completo</mat-label>
+    <input matInput formControlName="fullName" placeholder="Ingresa tu nombre" />
+    @if (reservationForm.get('fullName')?.hasError('required') && reservationForm.get('fullName')?.touched) {
+    <mat-error>El nombre es obligatorio.</mat-error>
+    }
+    @if (reservationForm.get('fullName')?.hasError('minlength') && reservationForm.get('fullName')?.touched) {
+    <mat-error>Debe tener al menos 3 caracteres.</mat-error>
+    }
+    @if (reservationForm.get('fullName')?.hasError('maxlength') && reservationForm.get('fullName')?.touched) {
+    <mat-error>No puede superar los 50 caracteres.</mat-error>
+    }
+    @if (reservationForm.get('fullName')?.hasError('pattern') && reservationForm.get('fullName')?.touched) {
+    <mat-error>Solo se permiten letras y espacios.</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Huéspedes -->
+  <label class="huespedes-label">Huéspedes:</label>
+  <div class="guest-controls">
+    <button mat-raised-button type="button" (click)="decrease('guests')">-</button>
+    <span>{{ reservationForm.get('guests')?.value }}</span>
+    <button mat-raised-button type="button" (click)="increase('guests')">+</button>
+  </div>
+  @if (maxGuestsReached) {
+  <mat-error>Maximo 5 huespedes.</mat-error>
+  }
+  <br>
+
+  <!-- Tipo de habitación -->
+  <mat-form-field appearance="fill">
+    <mat-label>Tipo de habitación</mat-label>
+    <mat-select formControlName="roomType">
+      <mat-option value="">Seleccione una opción</mat-option>
+      @for (room of roomTypes; track room) {
+      <mat-option [value]="room">{{ room }}</mat-option>
+      }
+    </mat-select>
+    @if (reservationForm.get('roomType')?.hasError('required') && reservationForm.get('roomType')?.touched) {
+    <mat-error>Selecciona un tipo de habitación.</mat-error>
+    }
+    @if (reservationForm.get('roomType')?.hasError('pattern') && reservationForm.get('roomType')?.touched) {
+    <mat-error>La habitación seleccionada no es válida.</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Fecha de llegada -->
+  <mat-form-field appearance="fill">
+    <mat-label>Fecha de llegada</mat-label>
+    <input matInput [matDatepicker]="picker1" formControlName="checkInDate" [min]="today" />
+    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+    <mat-datepicker #picker1></mat-datepicker>
+
+    @if (reservationForm.get('checkInDate')?.hasError('required') && reservationForm.get('checkInDate')?.touched) {
+    <mat-error>Selecciona una fecha de llegada.</mat-error>
+    }
+    @if (reservationForm.get('checkInDate')?.hasError('weekend') && reservationForm.get('checkInDate')?.touched) {
+    <mat-error>No se permite check-in en fines de semana.</mat-error>
+    }
+  </mat-form-field>
+
+
+  <!-- Fecha de salida -->
+  <mat-form-field appearance="fill">
+    <mat-label>Fecha de salida</mat-label>
+    <input matInput [matDatepicker]="picker2" formControlName="checkOutDate" [min]="minCheckOutDate" />
+    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+    <mat-datepicker #picker2></mat-datepicker>
+
+    @if (reservationForm.get('checkOutDate')?.hasError('required') && reservationForm.get('checkOutDate')?.touched) {
+    <mat-error>Selecciona una fecha de salida.</mat-error>
+    }
+    @if (reservationForm.get('checkOutDate')?.hasError('checkOutBeforeCheckIn') &&
+    reservationForm.get('checkOutDate')?.touched) {
+    <mat-error>La salida debe ser después de la entrada.</mat-error>
+    }
+    @if (reservationForm.get('checkOutDate')?.hasError('minStay') && reservationForm.get('checkOutDate')?.touched) {
+    <mat-error>La estancia mínima es de 2 noches.</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Método de pago -->
+  <label>Método de pago:</label>
+  <mat-radio-group formControlName="paymentMethod">
+    <mat-radio-button value="tarjeta">Tarjeta</mat-radio-button>
+    <mat-radio-button value="efectivo">Efectivo</mat-radio-button>
+    <mat-radio-button value="otro">Otro</mat-radio-button>
+  </mat-radio-group>
+  @if (reservationForm.get('paymentMethod')?.hasError('required') && reservationForm.get('paymentMethod')?.touched) {
+  <mat-error>Selecciona un método de pago.</mat-error>
+  }
+  @if (reservationForm.get('paymentMethod')?.hasError('pattern') && reservationForm.get('paymentMethod')?.touched) {
+  <mat-error>El método de pago no es válido.</mat-error>
+  }
+
+  <!-- Total -->
+  <p class="total">Total: ${{ total }}</p>
+
+  <!-- Botón -->
+  <button mat-raised-button color="primary" type="submit" [disabled]="reservationForm.invalid" (click)="confirm()">
+    Reservar
+  </button>
+</div>

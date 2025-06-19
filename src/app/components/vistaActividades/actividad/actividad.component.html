@@ -1,0 +1,21 @@
+@if (actividad) {
+  <div class="detalle-container">
+    <img [src]="actividad.imagen" [alt]="actividad.nombre" class="detalle-imagen" />
+    <div class="detalle-texto">
+      <h2>{{ actividad.nombre }}</h2>
+      <p>{{ actividad.descripcion }}</p>
+      <p><strong>Precio:</strong> {{ actividad.precio }}</p>
+    </div>
+  </div>
+} @else {
+  <p>Cargando actividad...</p>
+}
+
+<div class="cta-reservacion">
+  <p>¿Interesado en esta actividad?</p>
+  <a routerLink="/reservaciones" routerLinkActive="active" class="btn-reservar">Haz tu reserva ahora</a>
+</div>
+<br>
+<br>
+
+

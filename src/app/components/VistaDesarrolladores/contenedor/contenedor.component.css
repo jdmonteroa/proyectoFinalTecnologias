@@ -1,0 +1,33 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.team-container {
+    padding: 5rem 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.team-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    width: 100%;
+}
+
+.team-header h1 {
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+}
+
+.header-divider {
+    height: 1px;
+    width: 100px;
+    background-color: #8A7356;
+    margin: 0 auto;
+}

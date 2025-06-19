@@ -1,0 +1,107 @@
+a {
+    text-decoration: none;
+    color: inherit;
+}
+.header {
+    background-color: #C4B39A; 
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo img {
+    transition: transform 0.3s ease;
+}
+
+.logo:hover img {
+    transform: scale(1.05);
+}
+
+.brand {
+    font-size: 24px;
+    font-weight: 600;
+    color: #5B4C3A;
+    letter-spacing: 0.5px;
+}
+
+.sabio {
+    color: #8A7356;
+    font-weight: 500;
+}
+
+.login-btn {
+    position: relative;
+    background-color: transparent;
+    border: 2px solid #5B4C3A;
+    color: #5B4C3A;
+    padding: 8px 20px 8px 25px;
+    font-weight: 500;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+.login-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background-color: #5B4C3A;
+    transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: 0;
+}
+
+.login-btn:hover {
+    color: #F4EFE6;
+    border-color: #5B4C3A;
+}
+
+.login-btn:hover::before {
+    width: 100%;
+}
+
+.btn-text, .btn-icon {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.login-btn:hover .btn-icon {
+    transform: translateX(3px);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name {
+    color: #5B4C3A;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.logout-btn {
+    color: #5B4C3A;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    color: #8A7356;
+    transform: scale(1.1);
+}

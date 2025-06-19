@@ -1,0 +1,15 @@
+<div class="team-container" style="background-color: #F4EFE6;">
+  <div class="team-members">
+    @for(admin of ADMIS; track admin.usuario) {
+        <div class="member-profile">
+            <div class="member-image-container">
+            <img [src]="admin.img" alt="{{admin.nombre}}" class="member-image">
+            </div>
+            <div class="member-info">
+            <h3 style="color: #5B4C3A;">{{admin.nombre}}</h3>
+            <p class="member-position" style="color: #8A7356;">Estudiante de Ingeniería en Sistemas</p>
+            </div>
+        </div>
+    }
+    </div>
+</div>

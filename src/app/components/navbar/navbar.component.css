@@ -1,0 +1,30 @@
+.navbar {
+    background-color: #DED1BA; 
+    padding: 10px 0;
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.nav-links {
+    cursor: pointer;
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-weight: 600;
+    color: #5B4C3A;
+    font-family: 'Segoe UI', sans-serif;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #8A7356;
+}

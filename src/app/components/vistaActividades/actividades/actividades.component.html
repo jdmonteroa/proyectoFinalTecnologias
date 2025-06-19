@@ -1,0 +1,29 @@
+<app-imagen></app-imagen>
+<app-buscar (buscar)="filtrarActividades($event)"></app-buscar>
+
+@if (mensaje) {
+  <div class="mensaje">{{ mensaje }}</div>
+}
+
+@if (actividades.length > 0 && buscando) {
+  <div class="volver-container">
+    <button class="btn-volver" (click)="verTodas()">Ver todas las actividades</button>
+  </div>
+}
+
+@if (actividadesFiltradas.length > 0) {
+  <div class="grid-actividades">
+    @for (actividad of actividadesFiltradas; track actividad.id) {
+      <div class="actividad-card">
+        <app-card
+          [nombre]="actividad.nombre"
+          [descripcion]="actividad.descripcion"
+          [imagen]="actividad.imagen"
+          [idActividad]="actividad.id"
+        ></app-card>
+      </div>
+    }
+  </div>
+}
+
+

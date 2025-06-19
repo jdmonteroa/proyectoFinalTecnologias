@@ -1,0 +1,18 @@
+<div class="gallery-container">
+    @if (selectedImage) {
+      <div class="main-image">
+        <img [src]="selectedImage" alt="Imagen seleccionada">
+      </div>
+    }
+  
+    <div class="thumbnails">
+      @for (img of images; track img) {
+        <img 
+          [src]="img" 
+          (click)="selectImage(img)" 
+          [class.active]="img === selectedImage"
+          alt="Miniatura"
+        >
+      }
+    </div>
+  </div>

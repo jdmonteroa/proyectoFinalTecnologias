@@ -19,4 +19,25 @@ export const ADMIS: Admin[] = [
         contrasena: "admin34",
         img:"img/Jare.jpg"
     }
+    ,
+    {
+        nombre: "Martha Melinna Flores Hernandez",
+        usuario: "admin4",
+        contrasena: "admin45",
+        img:"img/Mar.jpg"
+    }
+    ,
+    {
+        nombre: "Joshua Davila Rodriguez",
+        usuario: "admin5",
+        contrasena: "admin56",
+        img:"img/josh.jpg"
+    }
+    ,
+    {
+        nombre: "Oswaldo De La Cruz Garcia",
+        usuario: "admin6",
+        contrasena: "admin67",
+        img:"img/Oswaldo.jpg"
+    }
 ];

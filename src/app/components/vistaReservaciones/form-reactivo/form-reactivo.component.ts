@@ -7,6 +7,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
+import { ReservasService } from '../../../../services/reservas.service';
 
 @Component({
   selector: 'app-form-reactivo',
@@ -29,7 +30,7 @@ export class FormReactivoComponent {
   reservationForm: FormGroup;
   total: number = 0;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private reservasService: ReservasService) {
     this.reservationForm = this.fb.group({
       fullName: [
         '',
@@ -185,25 +186,50 @@ export class FormReactivoComponent {
 
   confirm(): void {
     if (this.reservationForm.valid) {
-      const nuevaReserva = this.reservationForm.value;
-      const reservasGuardadas = JSON.parse(localStorage.getItem('reservas') || '[]');
-      reservasGuardadas.push(nuevaReserva);
-      localStorage.setItem('reservas', JSON.stringify(reservasGuardadas));
+      const formValue = this.reservationForm.value;
 
-      Swal.fire({
-        title: '¡Reservación exitosa!',
-        text: 'Tus datos han sido guardados.',
-        icon: 'success',
-        background: '#fffaf3',
-        color: '#5B4C3A',
-        iconColor: '#5B4C3A',
-        confirmButtonColor: '#A9745D',
-        confirmButtonText: 'Aceptar'
+      const reserva = {
+        nombre: formValue.fullName,
+        huespedes: formValue.guests,
+        tipohabitacion: formValue.roomType,
+        Fechallegada: formValue.checkInDate,
+        fechasalida: formValue.checkOutDate,
+        metodopago: formValue.paymentMethod,
+        total: this.total
+      };
+
+      this.reservasService.crearReserva(reserva).subscribe({
+        next: () => {
+          Swal.fire({
+            title: '¡Reservación exitosa!',
+            text: 'Tus datos han sido guardados en la base de datos.',
+            icon: 'success',
+            background: '#fffaf3',
+            color: '#5B4C3A',
+            iconColor: '#5B4C3A',
+            confirmButtonColor: '#A9745D',
+            confirmButtonText: 'Aceptar'
+          });
+
+          this.reservationForm.reset();
+          this.reservationForm.patchValue({ guests: 1 });
+          this.total = 0;
+        },
+        error: (error) => {
+          console.error('Error al guardar reserva:', error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al guardar tu reserva.',
+            icon: 'error',
+            background: '#fffaf3',
+            color: '#5B4C3A',
+            iconColor: '#B23B3B',
+            confirmButtonColor: '#A9745D',
+            confirmButtonText: 'Entendido'
+          });
+        }
       });
 
-      this.reservationForm.reset();
-      this.reservationForm.patchValue({ guests: 1 });
-      this.total = 0;
     } else {
       Swal.fire({
         title: 'Error',
@@ -217,6 +243,7 @@ export class FormReactivoComponent {
       });
     }
   }
+
 }
 
 

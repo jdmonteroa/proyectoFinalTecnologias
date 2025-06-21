@@ -2,7 +2,9 @@
   padding: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
-  
+  background-color: #fffaf3;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(91, 76, 58, 0.1);
 }
 
 h2 {
@@ -10,15 +12,16 @@ h2 {
   margin-bottom: 1.25rem;
   text-align: center;
   font-size: 1.75rem;
+  font-weight: 600;
 }
 
 .no-reservations {
-  font-weight: bold;
   text-align: center;
   padding: 2.5rem;
   background-color: #f5f5f5;
   border-radius: 8px;
   margin-top: 1.25rem;
+  border: 1px solid #ddd;
 }
 
 .no-reservations mat-icon {
@@ -37,24 +40,35 @@ h2 {
 .table-container {
   overflow-x: auto;
   margin-top: 1.25rem;
+  border-radius: 8px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th {
-  color: #5B4C3A !important;
-  font-weight: bold;
+  background-color: #5B4C3A;
+  color: white;
   font-weight: 500;
   position: sticky;
   top: 0;
+  z-index: 1;
 }
 
 td, th {
   padding: 0.75rem 1rem;
   text-align: left;
+  font-size: 0.95rem;
+}
+
+.table-container th,
+.table-container td {
+  color: #5B4C3A;
 }
 
 tr:nth-child(even) {
@@ -62,14 +76,76 @@ tr:nth-child(even) {
 }
 
 tr:hover {
-  background-color:#f0e9d9; 
+  background-color: #f0e9d9;
+}
+
+.table-container input,
+.table-container select,
+.table-container textarea {
+  color: #5B4C3A;
+  background-color: #fffaf3;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  border-radius: 4px;
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+textarea {
+  min-height: 80px;
 }
 
 button[mat-icon-button] {
   margin: 0 0.25rem;
+  color: #5B4C3A;
 }
 
-small {
-  color: #757575;
-  font-size: 0.8em;
+button[mat-raised-button] {
+  margin-top: 1rem;
+  background-color: #A9745D;
+  color: white;
+}
+
+button[mat-raised-button]:hover {
+  background-color: #91624e;
+}
+
+button[mat-icon-button]:hover {
+  color: #A9745D;
+}
+
+.edit-input,
+.edit-select {
+  width: 100%;
+}
+
+.guest-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error {
+  color: #b23b3b;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.date-edit {
+  margin-bottom: 0.75rem;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.mat-icon-button {
+  vertical-align: middle;
+}
+
+select:invalid {
+  color: #888;
 }

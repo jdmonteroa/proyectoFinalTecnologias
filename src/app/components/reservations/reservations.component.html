@@ -2,166 +2,195 @@
   <h2>Lista de Reservaciones</h2>
 
   @if (reservations().length === 0) {
-  <div class="no-reservations">
-    <mat-icon>hotel</mat-icon>
-    <p>Aún no hay reservaciones registradas</p>
-  </div>
+    <div class="no-reservations">
+      <mat-icon>hotel</mat-icon>
+      <p>Aún no hay reservaciones registradas</p>
+    </div>
   } @else {
-  <div class="table-container">
-    <table mat-table [dataSource]="reservations()" class="mat-elevation-z8">
+    <div class="table-container">
+      <table mat-table [dataSource]="reservations()" class="mat-elevation-z8">
 
-      <!-- Nombre -->
-      <ng-container matColumnDef="fullName">
-        <th mat-header-cell *matHeaderCellDef>Nombre</th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          @if (editingIndex() === i) {
-          <input [(ngModel)]="element.fullName" class="edit-input" required minlength="3" maxlength="50"
-            pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" />
-          @if (!isValidName(element.fullName)) {
-          <small class="error">
-            El nombre debe tener al menos 3 letras y solo contener caracteres válidos
-          </small>
-          }
-          } @else {
-          {{ element.fullName }}
-          }
-        </td>
-      </ng-container>
-
-      <!-- Huéspedes -->
-      <ng-container matColumnDef="guests">
-        <th mat-header-cell *matHeaderCellDef>Huéspedes</th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          @if (editingIndex() === i) {
-          <div class="guest-controls">
-            <button mat-raised-button type="button" (click)="adjustGuests(i, false)">-</button>
-            <span>{{ element.guests }}</span>
-            <button mat-raised-button type="button" (click)="adjustGuests(i, true)">+</button>
-          </div>
-          @if (element.guests < 1 || element.guests> 5) {
-            <small class="error">Debe ser entre 1 y 5 huéspedes</small>
-            }
+        <!-- Nombre -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef>Nombre</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            @if (editingIndex() === i) {
+              <input
+                [(ngModel)]="element.nombre"
+                class="edit-input"
+                required
+                minlength="3"
+                maxlength="50"
+                pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
+              />
             } @else {
-            {{ element.guests }}
+              {{ element.nombre }}
             }
-        </td>
-      </ng-container>
+          </td>
+        </ng-container>
 
-      <!-- Habitación -->
-      <ng-container matColumnDef="roomType">
-        <th mat-header-cell *matHeaderCellDef>Habitación</th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          @if (editingIndex() === i) {
-          <select [(ngModel)]="element.roomType" class="edit-select" required>
-            <option value="">Seleccione una opción</option>
-            @for (room of roomTypes; track room) {
-            <option [value]="room">{{ room }}</option>
+        <!-- Huéspedes -->
+        <ng-container matColumnDef="huespedes">
+          <th mat-header-cell *matHeaderCellDef>Huéspedes</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            @if (editingIndex() === i) {
+              <div class="guest-controls">
+                <button mat-raised-button type="button" (click)="adjustGuests(i, false)">-</button>
+                <span>{{ element.huespedes }}</span>
+                <button mat-raised-button type="button" (click)="adjustGuests(i, true)">+</button>
+              </div>
+              @if (element.huespedes < 1 || element.huespedes > 5) {
+                <small class="error">Debe ser entre 1 y 5 huéspedes</small>
+              }
+            } @else {
+              {{ element.huespedes }}
             }
-          </select>
-          @if (!element.roomType) {
-          <small class="error">Selecciona un tipo de habitación</small>
-          }
-          } @else {
-          {{ element.roomType }}
-          }
-        </td>
-      </ng-container>
+          </td>
+        </ng-container>
 
-      <!-- Fechas -->
-      <ng-container matColumnDef="dates">
-        <th mat-header-cell *matHeaderCellDef>Fechas</th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          @if (editingIndex() === i) {
-          <div class="date-edit">
-            <label>Entrada:</label>
-            <input type="date" [(ngModel)]="element.checkInDate" [min]="today | date:'yyyy-MM-dd'"
-              (change)="onDateChange(i, 'checkInDate', $event)" required />
-            @if (!element.checkInDate) {
-            <small class="error">Selecciona una fecha de entrada</small>
+        <!-- Tipo de Habitación -->
+        <ng-container matColumnDef="tipohabitacion">
+          <th mat-header-cell *matHeaderCellDef>Habitación</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            @if (editingIndex() === i) {
+              <select [(ngModel)]="element.tipohabitacion" class="edit-select" required>
+                <option value="">Seleccione una opción</option>
+                @for (room of roomTypes; track room) {
+                  <option [value]="room">{{ room }}</option>
+                }
+              </select>
+              @if (!element.tipohabitacion) {
+                <small class="error">Selecciona un tipo de habitación</small>
+              }
+            } @else {
+              {{ element.tipohabitacion }}
             }
-          </div>
-          <div class="date-edit">
-            <label>Salida:</label>
-            <input type="date" [(ngModel)]="element.checkOutDate" [min]="getMinCheckOutDate(element.checkInDate)"
-              (change)="onDateChange(i, 'checkOutDate', $event)" required />
-            @if (isCheckOutBeforeCheckIn(element.checkInDate, element.checkOutDate)) {
-            <small class="error">La salida debe ser después de la entrada</small>
+          </td>
+        </ng-container>
+
+        <!-- Fechas -->
+        <ng-container matColumnDef="fechas">
+          <th mat-header-cell *matHeaderCellDef>Fechas</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            @if (editingIndex() === i) {
+              <div class="date-edit">
+                <label>Entrada:</label>
+                <input
+                  type="date"
+                  [(ngModel)]="element.Fechallegada"
+                  [min]="today | date:'yyyy-MM-dd'"
+                  (change)="onDateChange(i, 'Fechallegada', $event)"
+                  required
+                />
+                @if (!element.Fechallegada) {
+                  <small class="error">Selecciona una fecha de entrada</small>
+                }
+              </div>
+              <div class="date-edit">
+                <label>Salida:</label>
+                <input
+                  type="date"
+                  [(ngModel)]="element.fechasalida"
+                  [min]="getMinCheckOutDate(element.Fechallegada)"
+                  (change)="onDateChange(i, 'fechasalida', $event)"
+                  required
+                />
+                @if (isCheckOutBeforeCheckIn(element.Fechallegada, element.fechasalida)) {
+                  <small class="error">La salida debe ser después de la entrada</small>
+                }
+                @if (!element.fechasalida) {
+                  <small class="error">Selecciona una fecha de salida</small>
+                }
+              </div>
+            } @else {
+              {{ getFormattedDate(element.Fechallegada) }} - {{ getFormattedDate(element.fechasalida) }}
+              <br />
+              <small>({{ getNightsCount(element.Fechallegada, element.fechasalida) }} noches)</small>
             }
-            @if (!element.checkOutDate) {
-            <small class="error">Selecciona una fecha de salida</small>
+          </td>
+        </ng-container>
+
+        <!-- Método de Pago -->
+        <ng-container matColumnDef="metodopago">
+          <th mat-header-cell *matHeaderCellDef>Pago</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            @if (editingIndex() === i) {
+              <select [(ngModel)]="element.metodopago" class="edit-select" required>
+                <option value="">Seleccione método</option>
+                @for (method of paymentMethods; track method) {
+                  <option [value]="method">{{ method }}</option>
+                }
+              </select>
+              @if (!element.metodopago) {
+                <small class="error">Selecciona un método de pago</small>
+              }
+            } @else {
+              @switch (element.metodopago) {
+                @case ('tarjeta') { Tarjeta }
+                @case ('efectivo') { Efectivo }
+                @case ('transferencia') { Transferencia }
+                @default { {{ element.metodopago }} }
+              }
             }
-          </div>
-          } @else {
-          {{ getFormattedDate(element.checkInDate) }} - {{ getFormattedDate(element.checkOutDate) }}
-          <br />
-          <small>({{ getNightsCount(element.checkInDate, element.checkOutDate) }} noches)</small>
-          }
-        </td>
-      </ng-container>
+          </td>
+        </ng-container>
 
-      <!-- Pago -->
-      <ng-container matColumnDef="paymentMethod">
-        <th mat-header-cell *matHeaderCellDef>Pago</th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          @if (editingIndex() === i) {
-          <select [(ngModel)]="element.paymentMethod" class="edit-select" required>
-            <option value="">Seleccione método</option>
-            <option value="tarjeta">Tarjeta</option>
-            <option value="efectivo">Efectivo</option>
-            <option value="transferencia">Transferencia</option>
-          </select>
-          @if (!element.paymentMethod) {
-          <small class="error">Selecciona un método de pago</small>
-          }
-          } @else {
-          @switch (element.paymentMethod) {
-          @case ('tarjeta') { Tarjeta }
-          @case ('efectivo') { Efectivo }
-          @case ('transferencia') { Transferencia }
-          @default { {{ element.paymentMethod }} }
-          }
-          }
-        </td>
-      </ng-container>
+        <!-- Total -->
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let element">
+            $ {{ element.total | number: '1.2-2' }}
+          </td>
+        </ng-container>
 
-      <!-- Acciones -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Acciones</th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          @if (editingIndex() === i) {
-          <button mat-icon-button color="primary" (click)="saveEdit(i)" matTooltip="Guardar" [disabled]="!isValidName(element.fullName) || 
-                                              element.guests < 1 || 
-                                              element.guests > 5 ||
-                                              !element.roomType ||
-                                              !element.paymentMethod ||
-                                              !element.checkInDate ||
-                                              !element.checkOutDate ||
-                                              isCheckOutBeforeCheckIn(element.checkInDate, element.checkOutDate)">
-            <mat-icon>check</mat-icon>
-          </button>
-          <button mat-icon-button (click)="cancelEdit()" matTooltip="Cancelar">
-            <mat-icon>close</mat-icon>
-          </button>
-          } @else {
-          <button mat-icon-button color="primary" (click)="startEdit(i)" matTooltip="Editar">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="deleteReservation(i)" matTooltip="Eliminar">
-            <mat-icon>delete</mat-icon>
-          </button>
-          }
-        </td>
-      </ng-container>
+        <!-- Acciones -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            @if (editingIndex() === i) {
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="saveEdit(i)"
+                matTooltip="Guardar"
+                [disabled]="
+                  !isValidName(element.nombre) ||
+                  element.huespedes < 1 ||
+                  element.huespedes > 5 ||
+                  !element.tipohabitacion ||
+                  !element.metodopago ||
+                  !element.Fechallegada ||
+                  !element.fechasalida ||
+                  isCheckOutBeforeCheckIn(element.Fechallegada, element.fechasalida)
+                "
+              >
+                <mat-icon>check</mat-icon>
+              </button>
+              <button mat-icon-button (click)="cancelEdit()" matTooltip="Cancelar">
+                <mat-icon>close</mat-icon>
+              </button>
+            } @else {
+              <button mat-icon-button color="primary" (click)="startEdit(i)" matTooltip="Editar">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteReservation(i)" matTooltip="Eliminar">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </div>
-  <div class="mt-4">
-    <button mat-raised-button color="warn" (click)="clearAll()">
-      <mat-icon>delete_forever</mat-icon>
-      Limpiar todas las reservaciones
-    </button>
-  </div>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <div class="mt-4">
+      <button mat-raised-button color="warn" (click)="clearAll()">
+        <mat-icon>delete_forever</mat-icon>
+        Limpiar todas las reservaciones
+      </button>
+    </div>
   }
 </div>
+

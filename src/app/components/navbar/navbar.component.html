@@ -18,5 +18,13 @@
                 <li><a routerLink="/acerca" routerLinkActive="active">Acerca de</a></li>
             }
         </ul>
+        <!-- accesibilidad -->
+        <div class="accessibility-container">
+            <app-accessibility-widget 
+            (fontChanged)="updateFont($event)"
+            (largeTextToggled)="toggleLargeText($event)"
+            (contrastToggled)="toggleContrast($event)">
+        </app-accessibility-widget>
+    </div>
     </div>
 </nav>

@@ -1,0 +1,32 @@
+.accessibility-widget {
+  position: relative;
+  display: inline-block;
+}
+
+.icon-button {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#accessibilityDropdown{
+    font-size: large;
+    background-color: #5B4C3A;
+    color: white;
+}
+
+.accessibility-container {
+  position: relative;
+}
+
+.btn-outline-custom {
+  color: #5B4C3A;
+  border-color: #5B4C3A;
+}
+
+.btn-outline-custom:hover,
+.btn-outline-custom:focus {
+  background-color: #5B4C3A;
+  color: white;
+}

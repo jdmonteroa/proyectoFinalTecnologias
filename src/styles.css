@@ -6,3 +6,22 @@ body{
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.high-contrast {
+  background-color: #5a4d3a !important;
+  color: rgb(252, 252, 252) !important;
+}
+
+.large-text {
+  font-size: 22px;
+}
+
+.large-text *,
+.large-text *::before,
+.large-text *::after {
+  font-size: inherit !important;
+}
+
+body, main, nav {
+  transition: all 0.3s ease;
+}

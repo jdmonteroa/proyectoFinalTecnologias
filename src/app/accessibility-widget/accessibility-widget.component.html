@@ -1,0 +1,42 @@
+<div class="dropdown accessibility-widget">
+  <button
+    class="btn dropdown-toggle"
+    type="button"
+    id="accessibilityDropdown"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    aria-label="Opciones de accesibilidad"
+  >
+    ♿️
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="accessibilityDropdown" style="min-width: 200px;">
+    <li>
+      <button class="dropdown-item" (click)="readContent()">🔊 Leer</button>
+    </li>
+    <li>
+      <button class="dropdown-item" (click)="pauseReading()">⏸️ Pausar</button>
+    </li>
+    <li>
+      <button class="dropdown-item" (click)="resumeReading()">▶️ Reanudar</button>
+    </li>
+    <li>
+      <button class="dropdown-item" (click)="stopReading()">⏹️ Detener</button>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li class="mt-2">
+      <button class="btn btn-outline-custom w-100" (click)="toggleLargeText()">🔠 Texto grande</button>
+    </li>
+
+    <li class="mt-2">
+      <label for="fontSelect" class="form-label mb-1">Fuente:</label>
+      <select id="fontSelect" class="form-select form-select-sm" (change)="onFontChange($event)">
+        @for (font of ['Roboto', 'Verdana', 'Bahnschrift']; track font) {
+          <option [value]="font">{{ font }}</option>
+        }
+      </select>
+    </li>
+    <li class="mt-2">
+      <button class="btn btn-outline-custom w-100" (click)="toggleContrast()">🌗 Contraste</button>
+    </li>
+  </ul>
+</div>

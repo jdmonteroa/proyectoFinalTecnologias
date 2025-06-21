@@ -2,40 +2,101 @@
     <button mat-icon-button class="close-button" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
     </button>
-    <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
-        <div class="form-header">
-            <h2 class="mat-headline-5">Bienvenido</h2>
-            <p class="subtitle mat-body-1">Por favor inicia sesión para continuar</p>
-            <div class="divider"></div>
-        </div>
-        <mat-form-field appearance="outline" class="form-group">
-            <mat-label>Nombre completo</mat-label>
-            <input matInput type="text" name="nombre" [(ngModel)]="nombre" required #nombreCtrl="ngModel">
-            <mat-icon matPrefix>person</mat-icon>
-            @if (nombreCtrl.invalid && nombreCtrl.touched) {
-            <mat-error>El nombre es obligatorio</mat-error>
-            }
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="form-group">
-            <mat-label>Nombre de usuario</mat-label>
-            <input matInput type="text" name="username" [(ngModel)]="username" required #usernameCtrl="ngModel">
-            <mat-icon matPrefix>account_circle</mat-icon>
-            @if (usernameCtrl.invalid && usernameCtrl.touched) {
-            <mat-error>El nombre de usuario es obligatorio</mat-error>
-            }
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="form-group">
-            <mat-label>Contraseña</mat-label>
-            <input matInput [type]="hidePassword ? 'password' : 'text'" name="password"
-            [(ngModel)]="password" required #passwordCtrl="ngModel">
-            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-            </button>
-            @if (passwordCtrl.invalid && passwordCtrl.touched) {
-            <mat-error>La contraseña es obligatoria</mat-error>
-            }
-        </mat-form-field>
-        <button mat-raised-button type="submit" class="submit-btn" color="primary" [disabled]="!loginForm.form.valid">
-            Ingresar
-        </button>
-    </form>
+    <div class="tab-header">
+        <button [class.active]="activeTab === 'login'" (click)="activeTab = 'login'">Iniciar</button>
+        <button [class.active]="activeTab === 'register'" (click)="activeTab = 'register'">Registrar</button>
+    </div>
+
+    <div class="form-container">
+        @if (activeTab === 'login') {
+        <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+            <div class="form-fields">
+                <div class="form-header">
+                    <h2 class="mat-headline-5">Bienvenido</h2>
+                    <p class="subtitle mat-body-1">Por favor inicia sesión para continuar</p>
+                    <div class="divider"></div>
+                </div>
+                <mat-form-field appearance="outline" class="form-group">
+                    <mat-label>Nombre completo</mat-label>
+                    <input matInput type="text" name="nombre" [(ngModel)]="nombre" required #nombreCtrl="ngModel">
+                    <mat-icon matPrefix>person</mat-icon>
+                    @if (nombreCtrl.invalid && nombreCtrl.touched) {
+                        <mat-error>El nombre es obligatorio</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-group">
+                    <mat-label>Nombre de usuario</mat-label>
+                    <input matInput type="text" name="username" [(ngModel)]="username" required #usernameCtrl="ngModel">
+                    <mat-icon matPrefix>account_circle</mat-icon>
+                    @if (usernameCtrl.invalid && usernameCtrl.touched) {
+                        <mat-error>El nombre de usuario es obligatorio</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-group">
+                    <mat-label>Contraseña</mat-label>
+                    <input matInput [type]="hidePassword ? 'password' : 'text'" name="password" [(ngModel)]="password" required #passwordCtrl="ngModel">
+                    <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+                    </button>
+                    @if (passwordCtrl.invalid && passwordCtrl.touched) {
+                        <mat-error>La contraseña es obligatoria</mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <div class="button-container">
+                <button mat-raised-button type="submit" class="auth-btn" color="primary" [disabled]="!loginForm.form.valid">
+                    Ingresar
+                </button>
+            </div>
+        </form>
+        } @else {
+        <form class="login-form" (ngSubmit)="onRegister()" #registerForm="ngForm">
+            <div class="form-fields">
+                <mat-form-field appearance="outline" class="form-group">
+                    <mat-label>Nombre de Usuario</mat-label>
+                    <input matInput type="text" name="regUsername" [(ngModel)]="regUsername" required minlength="6" #regUsernameCtrl="ngModel">
+                    <mat-icon matPrefix>person</mat-icon>
+                    @if (regUsernameCtrl.invalid && regUsernameCtrl.touched) {
+                        <mat-error>Debe tener al menos 6 caracteres</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-group">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" name="regEmail" [(ngModel)]="regEmail" required #regEmailCtrl="ngModel">
+                    <mat-icon matPrefix>email</mat-icon>
+                    @if (regEmailCtrl.invalid && regEmailCtrl.touched) {
+                        <mat-error>Correo obligatorio y válido</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-group">
+                    <mat-label>Contraseña</mat-label>
+                    <input matInput type="password" name="regPassword" [(ngModel)]="regPassword" required minlength="6" #regPasswordCtrl="ngModel">
+                    <mat-icon matPrefix>lock</mat-icon>
+                    @if (regPasswordCtrl.invalid && regPasswordCtrl.touched) {
+                        <mat-error>Mínimo 6 caracteres</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-group">
+                    <mat-label>Confirmar Contraseña</mat-label>
+                    <input matInput type="password" name="regConfirmPassword" [(ngModel)]="regConfirmPassword" required #regConfirmPasswordCtrl="ngModel">
+                    <mat-icon matPrefix>lock</mat-icon>
+                    @if (regConfirmPasswordCtrl.invalid && regConfirmPasswordCtrl.touched) {
+                        <mat-error>Confirma tu contraseña</mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <div class="button-container">
+                <button mat-raised-button type="submit" class="auth-btn" color="primary" [disabled]="!registerForm.form.valid">
+                    Registrar
+                </button>
+            </div>
+        </form>
+        }
+    </div>
 </div>

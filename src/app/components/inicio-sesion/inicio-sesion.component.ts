@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
 import { AuthService } from './shared/auth.service';
 import { AdminLoginResponse, AdminService} from './shared/admin.service';
+import { UsuarioService } from '../../../services/usuario.service';
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -28,19 +29,33 @@ import { AdminLoginResponse, AdminService} from './shared/admin.service';
   styleUrl: './inicio-sesion.component.css'
 })
 export class InicioSesionComponent {
+  // Campos de login
   username: string = '';
   password: string = '';
   nombre: string = '';
   hidePassword: boolean = true;
 
+  // Control de pestañas
+  activeTab: 'login' | 'register' = 'login';
+
+  // Campos de registro
+  regUsername = '';
+  regEmail = '';
+  regPassword = '';
+  regConfirmPassword: string = '';
+
   constructor(
     private adminService: AdminService,
     private dialogRef: MatDialogRef<InicioSesionComponent>,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UsuarioService
   ) {}
 
   closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  onRegister(): void {
   }
 
   onSubmit(): void {

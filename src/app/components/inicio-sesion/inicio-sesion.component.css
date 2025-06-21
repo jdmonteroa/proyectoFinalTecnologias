@@ -1,17 +1,65 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Segoe+UI&display=swap');
 
 .login-container {
+    width: 100%;
+    min-height: 550px;
     background-color: rgba(222, 209, 186, 0.95);
     padding: 24px;
     border-radius: 12px;
     border: 1px solid #B9A88F;
-    width: 100%;
-    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
 }
 
+/* Pestañas */
+.tab-header {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #B9A88F;
+}
+
+.tab-header button {
+    flex: 1;
+    background: none;
+    border: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px;
+    cursor: pointer;
+    color: #5B4C3A;
+    font-family: 'Playfair Display', serif;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-header button.active {
+    border-bottom: 3px solid #302920;
+    color: #302920;
+}
+
+/* Contenedor del formulario */
+.form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    
+}
+
+
 .login-form {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 12px;
+}
+/* Campos del formulario */
+.form-fields {
+    flex: 1;
+    
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -55,7 +103,13 @@
     color: #5B4C3A;
 }
 
-.submit-btn {
+.button-container {
+    padding-top: 16px;
+    flex-shrink: 0;
+}
+
+/* Botón de autenticación */
+.auth-btn {
     margin: 0 auto;
     background-color: #463c30;
     color: white;
@@ -72,10 +126,15 @@
     letter-spacing: 0.5px;
     box-shadow: 0 4px 12px rgba(91, 76, 58, 0.3);
 }
-
-.submit-btn:hover {
+.auth-btn:hover {
     background-color: #907a62;
     transform: translateY(-2px);
+}
+
+.auth-btn:disabled {
+    background-color: #B9A88F;
+    color: #5B4C3A;
+    cursor: not-allowed;
 }
 
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {

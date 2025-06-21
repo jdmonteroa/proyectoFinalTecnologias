@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
 import { AuthService } from './shared/auth.service';
 import { AdminLoginResponse, AdminService} from './shared/admin.service';
-import { UsuarioService } from '../../../services/usuario.service';
+import { Usuario, UsuarioService } from '../../../services/usuario.service';
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -56,7 +56,88 @@ export class InicioSesionComponent {
   }
 
   onRegister(): void {
+  const usernameTrimmed = this.regUsername.trim();
+  const passwordTrimmed = this.regPassword.trim();
+  const confirmPasswordTrimmed = this.regConfirmPassword.trim();
+
+  if (usernameTrimmed.length < 6) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Nombre muy corto',
+      text: 'El nombre de usuario debe tener al menos 6 caracteres.',
+      background: '#fffaf3',
+      color: '#5B4C3A',
+      iconColor: '#FFA500',
+      confirmButtonColor: '#A9745D',
+      confirmButtonText: 'Ok'
+    });
+    return;
   }
+
+  if (passwordTrimmed.length < 6) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Contraseña muy corta',
+      text: 'La contraseña debe tener al menos 6 caracteres.',
+      background: '#fffaf3',
+      color: '#5B4C3A',
+      iconColor: '#FFA500',
+      confirmButtonColor: '#A9745D',
+      confirmButtonText: 'Ok'
+    });
+    return;
+  }
+
+  if (passwordTrimmed !== confirmPasswordTrimmed) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Contraseñas no coinciden',
+      text: 'Asegúrate de que ambas contraseñas sean iguales.',
+      background: '#fffaf3',
+      color: '#5B4C3A',
+      iconColor: '#B23B3B',
+      confirmButtonColor: '#A9745D',
+      confirmButtonText: 'Revisar'
+    });
+    return;
+  }
+
+  const nuevoUsuario: Usuario = {
+    username: usernameTrimmed,     
+    email: this.regEmail.trim(),
+    password: passwordTrimmed
+  };
+
+
+  this.userService.registrarUsuario(nuevoUsuario).subscribe({
+    next: () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Registro exitoso',
+        text: 'Tu cuenta ha sido creada correctamente.',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#5B4C3A',
+        confirmButtonColor: '#A9745D',
+        confirmButtonText: 'Aceptar'
+      });
+      this.dialogRef.close(true); 
+    },
+    error: () => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al registrar',
+        text: 'Ocurrió un problema al crear tu cuenta. Intenta más tarde.',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#B23B3B',
+        confirmButtonColor: '#A9745D',
+        confirmButtonText: 'Cerrar'
+      });
+    }
+  });
+}
+
 
   onSubmit(): void {
     // Validación básica

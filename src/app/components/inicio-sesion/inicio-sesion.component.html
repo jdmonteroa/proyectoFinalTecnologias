@@ -68,9 +68,16 @@
                     <input matInput type="email" name="regEmail" [(ngModel)]="regEmail" required #regEmailCtrl="ngModel">
                     <mat-icon matPrefix>email</mat-icon>
                     @if (regEmailCtrl.invalid && regEmailCtrl.touched) {
-                        <mat-error>Correo obligatorio y válido</mat-error>
+                        <mat-error>
+                            @if (regEmailCtrl.errors?.['required']) {
+                                <div>El correo es obligatorio</div>
+                            }
+                            @if (regEmailCtrl.errors?.['pattern']) {
+                                <div>Formato de correo inválido</div>
+                            }
+                        </mat-error>
                     }
-                </mat-form-field>
+                    </mat-form-field>
 
                 <mat-form-field appearance="outline" class="form-group">
                     <mat-label>Contraseña</mat-label>

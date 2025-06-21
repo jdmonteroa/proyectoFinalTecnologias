@@ -1,0 +1,53 @@
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(248, 241, 231, 0.85); /* tono beige con opacidad */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
+}
+
+.loading-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.loading-card.themed {
+  background: #f6f1e6;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spinner.themed {
+  width: 42px;
+  height: 42px;
+  border: 5px solid #e0d8c3;
+  border-top: 5px solid #5d4436; /* tono marrón-terra */
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.loading-text.themed {
+  margin-top: 1rem;
+  font-size: 1.05rem;
+  color: #5d4436;
+  font-weight: 500;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

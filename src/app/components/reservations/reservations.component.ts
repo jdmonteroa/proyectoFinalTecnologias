@@ -6,15 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import Swal from 'sweetalert2';
-
-interface Reservation {
-  fullName: string;
-  guests: number;
-  roomType: string;
-  checkInDate: Date | string;
-  checkOutDate: Date | string;
-  paymentMethod: string;
-}
+import { Reserva, ReservasService } from '../../../services/reservas.service';
 
 @Component({
   selector: 'app-reservations',
@@ -26,39 +18,38 @@ interface Reservation {
     MatButtonModule,
     MatTooltipModule,
     FormsModule,
-    DatePipe
+    DatePipe,
   ],
   templateUrl: './reservations.component.html',
   styleUrls: ['./reservations.component.css']
 })
 export class ReservationsComponent implements OnInit {
-  reservations = signal<Reservation[]>([]);
-  displayedColumns: string[] = ['fullName', 'guests', 'roomType', 'dates', 'paymentMethod', 'actions'];
+  reservations = signal<Reserva[]>([]);
+  displayedColumns: string[] = ['nombre', 'huespedes', 'tipohabitacion', 'fechas', 'metodopago', 'total', 'actions'];
   editingIndex = signal<number | null>(null);
   roomTypes = ['Celestial Suite', 'Mystic Forest Suite', 'Golden Horizon Suite', 'Otro'];
   paymentMethods = ['tarjeta', 'efectivo'];
   today = new Date();
 
+  constructor(private reservasService: ReservasService) {}
+
   ngOnInit(): void {
     this.loadReservations();
-    window.addEventListener('storage', () => this.loadReservations());
   }
 
   loadReservations(): void {
-    const savedReservations = localStorage.getItem('reservas');
-    const parsedReservations = savedReservations ? JSON.parse(savedReservations) : [];
-
-    const formattedReservations = parsedReservations.map((res: any) => ({
-      ...res,
-      checkInDate: new Date(res.checkInDate),
-      checkOutDate: new Date(res.checkOutDate)
-    }));
-
-    this.reservations.set(formattedReservations);
+    this.reservasService.getReservas().subscribe({
+      next: (data) => {
+        this.reservations.set(data);
+      },
+      error: () => {
+        Swal.fire('Error', 'No se pudieron cargar las reservaciones', 'error');
+      }
+    });
   }
 
   isValidName(name: string) {
-    return name && name.trim().length >= 3 && /^[a-zA-Z\s]+$/.test(name);
+    return name && name.trim().length >= 3 && /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name);
   }
 
   isCheckOutBeforeCheckIn(checkIn: Date | string, checkOut: Date | string): boolean {
@@ -73,91 +64,39 @@ export class ReservationsComponent implements OnInit {
     return date.toISOString().split('T')[0];
   }
 
-  validateReservation(reservation: Reservation): boolean {
-    if (!this.isValidName(reservation.fullName)) {
-      Swal.fire({
-        title: 'Error',
-        text: 'El nombre debe tener al menos 3 letras y solo contener caracteres válidos',
-        icon: 'error',
-        background: '#fffaf3',
-        color: '#5B4C3A',
-        iconColor: '#B23B3B',
-        confirmButtonColor: '#A9745D'
-      });
+  validateReservation(reservation: Reserva): boolean {
+    if (!this.isValidName(reservation.nombre)) {
+      Swal.fire('Error', 'Nombre inválido', 'error');
       return false;
     }
 
-    if (reservation.guests < 1 || reservation.guests > 5) {
-      Swal.fire({
-        title: 'Error',
-        text: 'El número de huéspedes debe ser entre 1 y 5',
-        icon: 'error',
-        background: '#fffaf3',
-        color: '#5B4C3A',
-        iconColor: '#B23B3B',
-        confirmButtonColor: '#A9745D'
-      });
+    if (reservation.huespedes < 1 || reservation.huespedes > 5) {
+      Swal.fire('Error', 'Huéspedes fuera de rango (1-5)', 'error');
       return false;
     }
 
+    const checkIn = new Date(reservation.Fechallegada);
+    const checkOut = new Date(reservation.fechasalida);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
-    const checkIn = new Date(reservation.checkInDate);
-    checkIn.setHours(0, 0, 0, 0);
-    
-    const checkOut = new Date(reservation.checkOutDate);
-    checkOut.setHours(0, 0, 0, 0);
 
     if (checkIn < today) {
-      Swal.fire({
-        title: 'Error',
-        text: 'La fecha de llegada no puede ser anterior a hoy',
-        icon: 'error',
-        background: '#fffaf3',
-        color: '#5B4C3A',
-        iconColor: '#B23B3B',
-        confirmButtonColor: '#A9745D'
-      });
+      Swal.fire('Error', 'La fecha de entrada no puede ser anterior a hoy', 'error');
       return false;
     }
 
     if (this.isCheckOutBeforeCheckIn(checkIn, checkOut)) {
-      Swal.fire({
-        title: 'Error',
-        text: 'La fecha de salida debe ser posterior a la de llegada',
-        icon: 'error',
-        background: '#fffaf3',
-        color: '#5B4C3A',
-        iconColor: '#B23B3B',
-        confirmButtonColor: '#A9745D'
-      });
+      Swal.fire('Error', 'La fecha de salida debe ser posterior a la de entrada', 'error');
       return false;
     }
 
-    if (!this.roomTypes.includes(reservation.roomType)) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Selecciona un tipo de habitación válido',
-        icon: 'error',
-        background: '#fffaf3',
-        color: '#5B4C3A',
-        iconColor: '#B23B3B',
-        confirmButtonColor: '#A9745D'
-      });
+    if (!reservation.tipohabitacion || !this.roomTypes.includes(reservation.tipohabitacion)) {
+      Swal.fire('Error', 'Tipo de habitación inválido', 'error');
       return false;
     }
 
-    if (!this.paymentMethods.includes(reservation.paymentMethod)) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Selecciona un método de pago válido',
-        icon: 'error',
-        background: '#fffaf3',
-        color: '#5B4C3A',
-        iconColor: '#B23B3B',
-        confirmButtonColor: '#A9745D'
-      });
+    if (!reservation.metodopago || !this.paymentMethods.includes(reservation.metodopago)) {
+      Swal.fire('Error', 'Método de pago inválido', 'error');
       return false;
     }
 
@@ -165,32 +104,26 @@ export class ReservationsComponent implements OnInit {
   }
 
   deleteReservation(index: number): void {
+    const reserva = this.reservations()[index];
+    if (!reserva.id) return;
+
     Swal.fire({
       title: '¿Estás seguro?',
-      text: "¡No podrás revertir esta acción!",
+      text: 'Esta acción no se puede deshacer.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
-      background: '#fffaf3',
-      color: '#5B4C3A',
-      iconColor: '#5B4C3A',
       confirmButtonColor: '#A9745D',
-    }).then((result) => {
+    }).then(result => {
       if (result.isConfirmed) {
-        const updatedReservations = [...this.reservations()];
-        updatedReservations.splice(index, 1);
-        localStorage.setItem('reservas', JSON.stringify(updatedReservations));
-        this.reservations.set(updatedReservations);
-
-        Swal.fire({
-          title: '¡Eliminado!',
-          text: 'La reservacion ha sido eliminado.',
-          icon: 'success',
-          background: '#fffaf3',
-          color: '#5B4C3A',
-          iconColor: '#5B4C3A',
-          confirmButtonColor: '#A9745D'
+        this.reservasService.eliminarReserva(reserva.id!).subscribe({
+          next: () => {
+            const updated = this.reservations().filter((_, i) => i !== index);
+            this.reservations.set(updated);
+            Swal.fire('¡Eliminado!', 'La reservación fue eliminada.', 'success');
+          },
+          error: () => Swal.fire('Error', 'No se pudo eliminar la reservación.', 'error')
         });
       }
     });
@@ -204,12 +137,7 @@ export class ReservationsComponent implements OnInit {
   }
 
   getFormattedDate(date: Date | string): string {
-    const dateObj = new Date(date);
-    return dateObj.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+    return new Date(date).toLocaleDateString('es-MX');
   }
 
   startEdit(index: number): void {
@@ -221,87 +149,77 @@ export class ReservationsComponent implements OnInit {
     this.loadReservations();
   }
 
-  onDateChange(index: number, field: 'checkInDate' | 'checkOutDate', event: Event): void {
+  onDateChange(index: number, field: 'Fechallegada' | 'fechasalida', event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     const updated = [...this.reservations()];
     updated[index][field] = value;
-    
-    if (field === 'checkInDate') {
-      const checkIn = new Date(value);
-      const checkOut = new Date(updated[index].checkOutDate);
-      if (this.isCheckOutBeforeCheckIn(checkIn, checkOut)) {
-        const nextDay = new Date(checkIn);
-        nextDay.setDate(checkIn.getDate() + 1);
-        updated[index].checkOutDate = nextDay.toISOString().split('T')[0];
+
+    if (field === 'Fechallegada') {
+      const entrada = new Date(value);
+      const salida = new Date(updated[index].fechasalida);
+      if (this.isCheckOutBeforeCheckIn(entrada, salida)) {
+        const nextDay = new Date(entrada);
+        nextDay.setDate(entrada.getDate() + 1);
+        updated[index].fechasalida = nextDay.toISOString().split('T')[0];
       }
     }
-    
+
     this.reservations.set(updated);
   }
 
   adjustGuests(index: number, increment: boolean): void {
     const updated = [...this.reservations()];
-    const current = updated[index].guests;
-    
+    const current = updated[index].huespedes;
+
     if (increment && current < 5) {
-      updated[index].guests = current + 1;
+      updated[index].huespedes = current + 1;
     } else if (!increment && current > 1) {
-      updated[index].guests = current - 1;
+      updated[index].huespedes = current - 1;
     }
-    
+
     this.reservations.set(updated);
   }
 
   saveEdit(index: number): void {
     const updated = [...this.reservations()];
-    const reservation = updated[index];
-    
-    if (!this.validateReservation(reservation)) {
-      return;
-    }
-    
-    localStorage.setItem('reservas', JSON.stringify(updated));
-    this.reservations.set(updated);
-    this.editingIndex.set(null);
-    
-    Swal.fire({
-      title: '¡Actualizada!',
-      text: 'La reservacion fue modificada correctamente.',
-      icon: 'success',
-      background: '#fffaf3',
-      color: '#5B4C3A',
-      iconColor: '#5B4C3A',
-      confirmButtonColor: '#A9745D'
+    const reserva = updated[index];
+    if (!reserva.id) return;
+
+    if (!this.validateReservation(reserva)) return;
+
+    this.reservasService.actualizarReserva(reserva.id, reserva).subscribe({
+      next: () => {
+        this.editingIndex.set(null);
+        this.loadReservations();
+        Swal.fire('¡Actualizada!', 'La reservación fue modificada.', 'success');
+      },
+      error: () => Swal.fire('Error', 'No se pudo actualizar la reservación.', 'error')
     });
   }
 
   clearAll(): void {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: "¡Se eliminarán todas las reservaciones!",
+      text: 'Se eliminarán todas las reservaciones.',
       icon: 'warning',
       showCancelButton: true,
-      background: '#fffaf3',
-      color: '#5B4C3A',
-      iconColor: '#5B4C3A',
-      confirmButtonColor: '#A9745D',
-      cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar todo',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#A9745D',
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem('reservas');
-        this.reservations.set([]);
-        Swal.fire({
-          title: '¡Eliminados!',
-          text: 'Todas las reservaciones han sido eliminados.',
-          icon: 'success',
-          background: '#fffaf3',
-          color: '#5B4C3A',
-          iconColor: '#5B4C3A',
-          confirmButtonColor: '#A9745D'
-        });
+        const eliminaciones = this.reservations()
+          .filter(r => r.id !== undefined)
+          .map(r => this.reservasService.eliminarReserva(r.id!).toPromise());
+
+        Promise.all(eliminaciones)
+          .then(() => {
+            this.reservations.set([]);
+            Swal.fire('¡Eliminadas!', 'Todas las reservaciones fueron eliminadas.', 'success');
+          })
+          .catch(() => Swal.fire('Error', 'No se pudieron eliminar todas.', 'error'));
       }
     });
   }
 }
+

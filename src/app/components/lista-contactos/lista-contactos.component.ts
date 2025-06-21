@@ -1,23 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import Swal from 'sweetalert2';
-
-
-interface Contact {
-  nombre: string;
-  apellido: string;
-  correo: string;
-  mensaje: string;
-}
+import { Contacto, ContactoService } from '../../../services/contacto.service';
 
 @Component({
   selector: 'app-lista-contactos',
+  standalone: true,
   imports: [
     CommonModule,
     MatTableModule,
@@ -29,47 +23,45 @@ interface Contact {
   templateUrl: './lista-contactos.component.html',
   styleUrl: './lista-contactos.component.css'
 })
-export class ListaContactosComponent {
-  contacts = signal<Contact[]>([]);
-  displayedColumns: string[] = ['nombre', 'apellido', 'correo', 'mensaje', 'actions'];
+export class ListaContactosComponent implements OnInit {
+  contacts = signal<Contacto[]>([]);
+  displayedColumns: string[] = ['nombre', 'apellidos', 'correo', 'Mensaje', 'actions'];
   editingIndex = signal<number | null>(null);
+
+  constructor(private contactoService: ContactoService) {}
 
   ngOnInit(): void {
     this.loadContacts();
   }
 
   loadContacts(): void {
-    const savedContacts = localStorage.getItem('formularios');
-    this.contacts.set(savedContacts ? JSON.parse(savedContacts) : []);
+    this.contactoService.obtenerContactos().subscribe({
+      next: (data) => this.contacts.set(data),
+      error: () => Swal.fire('Error', 'No se pudieron cargar los contactos', 'error')
+    });
   }
 
   deleteContact(index: number): void {
+    const contacto = this.contacts()[index];
+    if (!contacto.id) return;
+
     Swal.fire({
       title: '¿Estás seguro?',
-      text: "¡No podrás revertir esta acción!",
+      text: '¡No podrás revertir esta acción!',
       icon: 'warning',
       showCancelButton: true,
-      background: '#fffaf3',         // Fondo claro
-      color: '#5B4C3A',              // Texto café
-      iconColor: '#5B4C3A',          // Ícono verde estilo café
-      confirmButtonColor: '#A9745D', // Botón café fuerte
-      cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
-    }).then((result) => {
+    }).then(result => {
       if (result.isConfirmed) {
-        const updatedContacts = [...this.contacts()];
-        updatedContacts.splice(index, 1);
-        this.updateContacts(updatedContacts);
-        Swal.fire({
-          title: '¡Eliminado!',
-          text: 'El contacto ha sido eliminado.',
-          icon: 'success',
-          background: '#fffaf3',
-          color: '#5B4C3A',
-          iconColor: '#5B4C3A',
-          confirmButtonColor: '#A9745D',
-          
+        this.contactoService.eliminarContacto(contacto.id!).subscribe({
+          next: () => {
+            const nuevos = [...this.contacts()];
+            nuevos.splice(index, 1);
+            this.contacts.set(nuevos);
+            Swal.fire('¡Eliminado!', 'El contacto ha sido eliminado.', 'success');
+          },
+          error: () => Swal.fire('Error', 'No se pudo eliminar el contacto.', 'error')
         });
       }
     });
@@ -78,29 +70,23 @@ export class ListaContactosComponent {
   clearAll(): void {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: "¡Se eliminarán todos los contactos!",
+      text: 'Esto eliminará todos los contactos de la base de datos.',
       icon: 'warning',
       showCancelButton: true,
-      background: '#fffaf3',         // Fondo claro
-      color: '#5B4C3A',              // Texto café
-      iconColor: '#5B4C3A',          // Ícono verde estilo café
-      confirmButtonColor: '#A9745D', // Botón café fuerte
-      cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar todo',
       cancelButtonText: 'Cancelar'
-    }).then((result) => {
+    }).then(result => {
       if (result.isConfirmed) {
-        localStorage.removeItem('formularios');
-        this.contacts.set([]);
-        Swal.fire({
-          title: '¡Eliminados!',
-          text: 'Todos los contactos han sido eliminados.',
-          icon: 'success',
-          background: '#fffaf3',
-          color: '#5B4C3A',
-          iconColor: '#5B4C3A',
-          confirmButtonColor: '#A9745D'
-        });
+        const eliminaciones = this.contacts().map(c =>
+          c.id ? this.contactoService.eliminarContacto(c.id).toPromise() : null
+        );
+
+        Promise.all(eliminaciones)
+          .then(() => {
+            this.contacts.set([]);
+            Swal.fire('¡Eliminados!', 'Todos los contactos han sido eliminados.', 'success');
+          })
+          .catch(() => Swal.fire('Error', 'Hubo un problema eliminando todos los contactos.', 'error'));
       }
     });
   }
@@ -115,22 +101,28 @@ export class ListaContactosComponent {
   }
 
   saveEdit(index: number): void {
-    const updated = [...this.contacts()];
-    this.updateContacts(updated);
-    this.editingIndex.set(null);
-    Swal.fire({
-      title: '¡Actualizado!',
-      text: 'El contacto fue modificado correctamente.',
-      icon: 'success',
-      background: '#fffaf3',
-      color: '#5B4C3A',
-      iconColor: '#5B4C3A',
-      confirmButtonColor: '#A9745D'
+    const contactoOriginal = this.contacts()[index];
+    if (!contactoOriginal.id) return;
+
+    // Clonar contacto para evitar problemas de referencia
+    const nuevoContacto: Contacto = {
+      id: contactoOriginal.id,
+      nombre: contactoOriginal.nombre,
+      apellidos: contactoOriginal.apellidos,
+      correo: contactoOriginal.correo,
+      Mensaje: contactoOriginal.Mensaje
+    };
+
+    this.contactoService.actualizarContacto(contactoOriginal.id, nuevoContacto).subscribe({
+      next: () => {
+        const nuevos = [...this.contacts()];
+        nuevos[index] = nuevoContacto;
+        this.contacts.set(nuevos);
+        this.editingIndex.set(null);
+        Swal.fire('¡Actualizado!', 'El contacto fue modificado correctamente.', 'success');
+      },
+      error: () => Swal.fire('Error', 'No se pudo actualizar el contacto.', 'error')
     });
   }
-
-  private updateContacts(updated: any[]): void {
-    localStorage.setItem('formularios', JSON.stringify(updated));
-    this.contacts.set(updated);
-  }
 }
+

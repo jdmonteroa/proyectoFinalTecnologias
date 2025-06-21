@@ -7,6 +7,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
+import { ReservasService } from '../../../../services/reservas.service';
 import { CommonModule } from '@angular/common';
 
 declare const paypal: any;
@@ -33,7 +34,7 @@ export class FormReactivoComponent {
   reservationForm: FormGroup;
   total: number = 0;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private reservasService: ReservasService) {
     this.reservationForm = this.fb.group({
       fullName: [
         '',
@@ -225,19 +226,56 @@ export class FormReactivoComponent {
 
   confirm(): void {
     if (this.reservationForm.valid) {
-      const nuevaReserva = this.reservationForm.value;
-      const reservasGuardadas = JSON.parse(localStorage.getItem('reservas') || '[]');
-      reservasGuardadas.push(nuevaReserva);
-      localStorage.setItem('reservas', JSON.stringify(reservasGuardadas));
+      const formValue = this.reservationForm.value;
 
-      this.reservaExitosa.set(true);
-      setTimeout(() => this.reservaExitosa.set(false), 5000); 
+      const reserva = {
+        nombre: formValue.fullName,
+        huespedes: formValue.guests,
+        tipohabitacion: formValue.roomType,
+        Fechallegada: formValue.checkInDate,
+        fechasalida: formValue.checkOutDate,
+        metodopago: formValue.paymentMethod,
+        total: this.total
+      };
 
-      this.reservationForm.reset();
-      this.reservationForm.patchValue({ guests: 1 });
-      this.total = 0;
+      this.reservasService.crearReserva(reserva).subscribe({
+        next: () => {
+          this.reservaExitosa.set(true);
+          setTimeout(() => this.reservaExitosa.set(false), 5000); 
+
+          this.reservationForm.reset();
+          this.reservationForm.patchValue({ guests: 1 });
+          this.total = 0;
+        },
+        error: (error) => {
+          console.error('Error al guardar reserva:', error);
+          Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al guardar tu reserva.',
+            icon: 'error',
+            background: '#fffaf3',
+            color: '#5B4C3A',
+            iconColor: '#B23B3B',
+            confirmButtonColor: '#A9745D',
+            confirmButtonText: 'Entendido'
+          });
+        }
+      });
+
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: 'Por favor completa todos los campos correctamente.',
+        icon: 'error',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#B23B3B',
+        confirmButtonColor: '#A9745D',
+        confirmButtonText: 'Entendido'
+      });
     }
   }
+
 }
 
 

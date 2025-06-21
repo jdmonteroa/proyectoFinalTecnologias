@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, catchError, of } from 'rxjs';
+import { map, Observable, catchError, of, delay } from 'rxjs';
 import { Actividades } from './actividades';
 
 @Injectable({
@@ -12,11 +12,12 @@ export class ActividadesService {
   constructor(private http: HttpClient) {}
 
   obtenerActividades(): Observable<Actividades[]> {
-    return this.http.get<{ actividades: Actividades[] }>(this.apiUrl).pipe(
-      map(response => response.actividades),
-      catchError(this.handleError<Actividades[]>('obtenerActividades', []))
-    );
-  }
+  return this.http.get<{ actividades: Actividades[] }>(this.apiUrl).pipe(
+    delay(5000), // 2 segundos de carga
+    map(response => response.actividades),
+    catchError(this.handleError<Actividades[]>('obtenerActividades', []))
+  );
+}
 
   obtenerActividadPorId(id: number): Observable<Actividades | undefined> {
     return this.obtenerActividades().pipe(

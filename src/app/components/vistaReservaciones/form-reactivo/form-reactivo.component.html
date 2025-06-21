@@ -88,7 +88,7 @@
   <mat-radio-group formControlName="paymentMethod">
     <mat-radio-button value="tarjeta">Tarjeta</mat-radio-button>
     <mat-radio-button value="efectivo">Efectivo</mat-radio-button>
-    <mat-radio-button value="otro">Otro</mat-radio-button>
+    <mat-radio-button value="paypal">Paypal</mat-radio-button>
   </mat-radio-group>
   @if (reservationForm.get('paymentMethod')?.hasError('required') && reservationForm.get('paymentMethod')?.touched) {
   <mat-error>Selecciona un método de pago.</mat-error>
@@ -100,8 +100,18 @@
   <!-- Total -->
   <p class="total">Total: ${{ total }}</p>
 
-  <!-- Botón -->
-  <button mat-raised-button color="primary" type="submit" [disabled]="reservationForm.invalid" (click)="confirm()">
-    Reservar
-  </button>
+  <!-- Contenedor para el botón de PayPal -->
+<div id="paypal-button-container" *ngIf="showPaypal"></div>
+
+<!-- Botón clásico (desactívalo si se paga por PayPal) -->
+<button
+  mat-raised-button
+  color="primary"
+  type="submit"
+  [disabled]="reservationForm.invalid || showPaypal"
+  (click)="confirm()"
+>
+  Reservar
+</button>
+
 </div>

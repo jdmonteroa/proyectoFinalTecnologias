@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { MatInputModule } from '@angular/material/input';
@@ -7,11 +7,14 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+
+declare const paypal: any;
 
 @Component({
   selector: 'app-form-reactivo',
   standalone: true,
-  imports: [ReactiveFormsModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatButtonModule],
+  imports: [ReactiveFormsModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatButtonModule, CommonModule],
   templateUrl: './form-reactivo.component.html',
   styleUrls: ['./form-reactivo.component.css']
 })
@@ -74,7 +77,7 @@ export class FormReactivoComponent {
         '',
         [
           Validators.required,
-          Validators.pattern(/^(efectivo|tarjeta)$/i)
+          Validators.pattern(/^(efectivo|tarjeta|paypal)$/i)
         ]
       ]
     }, {
@@ -93,6 +96,15 @@ export class FormReactivoComponent {
 
     this.reservationForm.valueChanges.subscribe(() => {
       this.calculateTotal();
+    });
+
+    this.reservationForm.get('paymentMethod')?.valueChanges.subscribe(method => {
+      this.showPaypal = method === 'paypal';
+  
+      // Si elige PayPal, renderizar el botón nuevamente
+      if (this.showPaypal) {
+        setTimeout(() => this.loadPaypalButton(), 100); // Esperar a que el DOM esté listo
+      }
     });
   }
 
@@ -181,6 +193,37 @@ export class FormReactivoComponent {
 
     const pricePerNight = this.roomPrices[room] || 0;
     this.total = pricePerNight * nights * guests;
+  }
+
+  showPaypal: boolean = false;
+
+  ngAfterViewInit() {
+    this.loadPaypalButton();
+  }
+
+  loadPaypalButton() {
+    paypal.Buttons({
+      createOrder: (data: any, actions: any) => {
+        const total = this.total.toString(); // Total en MXN
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: total
+            }
+          }]
+        });
+      },
+      onApprove: (data: any, actions: any) => {
+        return actions.order.capture().then((details: any) => {
+          Swal.fire('Pago exitoso', `Gracias, ${details.payer.name.given_name}`, 'success');
+          this.confirm(); // Guarda la reserva
+        });
+      },
+      onError: (err: any) => {
+        console.error('Error en el pago:', err);
+        Swal.fire('Error', 'No se pudo procesar el pago.', 'error');
+      }
+    }).render('#paypal-button-container');
   }
 
   confirm(): void {

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { MatInputModule } from '@angular/material/input';
@@ -19,6 +19,7 @@ declare const paypal: any;
   styleUrls: ['./form-reactivo.component.css']
 })
 export class FormReactivoComponent {
+  reservaExitosa = signal(false);
   roomTypes = ['Celestial Suite', 'Mystic Forest Suite', 'Golden Horizon Suite', 'Otro'];
   roomPrices: { [key: string]: number } = {
     'Celestial Suite': 500,
@@ -219,10 +220,6 @@ export class FormReactivoComponent {
           this.confirm(); // Guarda la reserva
         });
       },
-      onError: (err: any) => {
-        console.error('Error en el pago:', err);
-        Swal.fire('Error', 'No se pudo procesar el pago.', 'error');
-      }
     }).render('#paypal-button-container');
   }
 
@@ -233,31 +230,12 @@ export class FormReactivoComponent {
       reservasGuardadas.push(nuevaReserva);
       localStorage.setItem('reservas', JSON.stringify(reservasGuardadas));
 
-      Swal.fire({
-        title: '¡Reservación exitosa!',
-        text: 'Tus datos han sido guardados.',
-        icon: 'success',
-        background: '#fffaf3',
-        color: '#5B4C3A',
-        iconColor: '#5B4C3A',
-        confirmButtonColor: '#A9745D',
-        confirmButtonText: 'Aceptar'
-      });
+      this.reservaExitosa.set(true);
+      setTimeout(() => this.reservaExitosa.set(false), 5000); 
 
       this.reservationForm.reset();
       this.reservationForm.patchValue({ guests: 1 });
       this.total = 0;
-    } else {
-      Swal.fire({
-        title: 'Error',
-        text: 'Por favor completa todos los campos correctamente.',
-        icon: 'error',
-        background: '#fffaf3',
-        color: '#5B4C3A',
-        iconColor: '#B23B3B',
-        confirmButtonColor: '#A9745D',
-        confirmButtonText: 'Entendido'
-      });
     }
   }
 }

@@ -102,16 +102,16 @@
 
   <!-- Contenedor para el botón de PayPal -->
 <div id="paypal-button-container" *ngIf="showPaypal"></div>
-
-<!-- Botón clásico (desactívalo si se paga por PayPal) -->
 <button
   mat-raised-button
   color="primary"
   type="submit"
   [disabled]="reservationForm.invalid || showPaypal"
-  (click)="confirm()"
->
-  Reservar
-</button>
+  (click)="confirm()">Reservar</button>
+
+  <div *ngIf="reservaExitosa()"
+     style="background: #fffaf3; padding: 1rem; border: 2px solid #5B4C3A; color: #5B4C3A; border-radius: 10px; margin-top: 1rem;">
+  ✅ ¡Reservación exitosa! Tus datos han sido guardados correctamente.</div>
+
 
 </div>

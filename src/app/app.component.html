@@ -1,6 +1,14 @@
 <app-header></app-header>
 <app-navbar></app-navbar>
 
+<div class="loading-overlay" [class.visible]="loading$ | async">
+  <div class="loading-card themed">
+    <div class="spinner themed"></div>
+    <p class="loading-text themed">Cargando actividades...</p>
+  </div>
+</div>
+
+
 <router-outlet></router-outlet>
 
 <app-footer></app-footer>

@@ -1,18 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Admin } from '../admin';
-import { ADMIS } from '../misadmis';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface AdminLoginResponse {
+  nombre: string;
+  usuario: string;
+  img?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
+  private apiUrl = 'http://localhost:3000/api'; // Cambia si usas una URL diferente
 
-  private admin:Admin[]=ADMIS;
+  constructor(private http: HttpClient) { }
 
-  constructor() { }
-
-  getAdmin(): Admin[] {
-    return this.admin;
-  } 
-  
+  login(payload: { nombre: string, usuario: string, password: string }): Observable<AdminLoginResponse> {
+    return this.http.post<AdminLoginResponse>(`${this.apiUrl}/login-superusuario`, payload);
+  }
 }
+

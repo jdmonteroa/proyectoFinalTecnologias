@@ -1,26 +1,28 @@
 import { Component } from '@angular/core';
-import Swal from 'sweetalert2';
-import { Admin } from './admin';
-import { AdminService } from './shared/admin.service';
-import { AuthService } from './shared/auth.service';
+import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCard, MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+
+import Swal from 'sweetalert2';
+import { AuthService } from './shared/auth.service';
+import { AdminLoginResponse, AdminService} from './shared/admin.service';
 
 @Component({
   selector: 'app-inicio-sesion',
-  imports: [RouterModule,
+  standalone: true,
+  imports: [
+    RouterModule,
+    FormsModule,
     MatFormFieldModule,
-    MatCardModule,
     MatInputModule,
+    MatCardModule,
     MatButtonModule,
-    MatIconModule,
-    FormsModule
+    MatIconModule
   ],
   templateUrl: './inicio-sesion.component.html',
   styleUrl: './inicio-sesion.component.css'
@@ -35,45 +37,61 @@ export class InicioSesionComponent {
     private adminService: AdminService,
     private dialogRef: MatDialogRef<InicioSesionComponent>,
     private authService: AuthService
-  ) { }
+  ) {}
 
   closeDialog(): void {
     this.dialogRef.close();
   }
 
   onSubmit(): void {
-    const admins: Admin[] = this.adminService.getAdmin();
-
-    const encontrado = admins.find(admin =>
-      admin.usuario === this.username &&
-      admin.contrasena === this.password &&
-      admin.nombre.trim().toLowerCase() === this.nombre.trim().toLowerCase()
-    );
-    if (encontrado) {
-      this.authService.login(this.username, encontrado.nombre); // Guarda el nombre
+    // Validación básica
+    if (!this.nombre.trim() || !this.username.trim() || !this.password.trim()) {
       Swal.fire({
-        title: '¡Inicio de sesión exitoso!',
-        text: 'Bienvenido, has ingresado correctamente.',
-        icon: 'success',
-        background: '#fffaf3',         // Fondo claro
-        color: '#5B4C3A',              // Texto café
-        iconColor: '#5B4C3A',          // Ícono verde estilo café
-        confirmButtonColor: '#A9745D', // Botón café fuerte
-        confirmButtonText: 'Continuar'
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Debes llenar todos los campos para continuar.',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#FFA500',
+        confirmButtonColor: '#A9745D',
+        confirmButtonText: 'Ok'
       });
-      this.dialogRef.close(true);
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Credenciales incorrectas',
-        text: 'Verifica tu nombre, usuario o contraseña.',
-        background: '#fffaf3',         // Fondo claro estilo beige
-        color: '#5B4C3A',              // Texto color café
-        iconColor: '#B23B3B',          // Ícono rojo oscuro
-        confirmButtonColor: '#A9745D', // Botón café fuerte
-        confirmButtonText: 'Entendido'
-      });
-
+      return;
     }
+
+    const payload = {
+      nombre: this.nombre.trim(),
+      usuario: this.username.trim(),
+      password: this.password.trim()
+    };
+
+    this.adminService.login(payload).subscribe({
+      next: (res: AdminLoginResponse) => {
+        this.authService.login(res.usuario, res.nombre);
+        Swal.fire({
+          title: '¡Inicio de sesión exitoso!',
+          text: `Bienvenido ${res.nombre}`,
+          icon: 'success',
+          background: '#fffaf3',
+          color: '#5B4C3A',
+          iconColor: '#5B4C3A',
+          confirmButtonColor: '#A9745D',
+          confirmButtonText: 'Continuar'
+        });
+        this.dialogRef.close(true);
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Credenciales incorrectas',
+          text: 'Verifica tu nombre, usuario o contraseña.',
+          background: '#fffaf3',
+          color: '#5B4C3A',
+          iconColor: '#B23B3B',
+          confirmButtonColor: '#A9745D',
+          confirmButtonText: 'Entendido'
+        });
+      }
+    });
   }
 }

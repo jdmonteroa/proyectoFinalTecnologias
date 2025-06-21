@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { MatInputModule } from '@angular/material/input';
@@ -8,15 +8,19 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { ReservasService } from '../../../../services/reservas.service';
+import { CommonModule } from '@angular/common';
+
+declare const paypal: any;
 
 @Component({
   selector: 'app-form-reactivo',
   standalone: true,
-  imports: [ReactiveFormsModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatButtonModule],
+  imports: [ReactiveFormsModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatButtonModule, CommonModule],
   templateUrl: './form-reactivo.component.html',
   styleUrls: ['./form-reactivo.component.css']
 })
 export class FormReactivoComponent {
+  reservaExitosa = signal(false);
   roomTypes = ['Celestial Suite', 'Mystic Forest Suite', 'Golden Horizon Suite', 'Otro'];
   roomPrices: { [key: string]: number } = {
     'Celestial Suite': 500,
@@ -75,7 +79,7 @@ export class FormReactivoComponent {
         '',
         [
           Validators.required,
-          Validators.pattern(/^(efectivo|tarjeta)$/i)
+          Validators.pattern(/^(efectivo|tarjeta|paypal)$/i)
         ]
       ]
     }, {
@@ -94,6 +98,15 @@ export class FormReactivoComponent {
 
     this.reservationForm.valueChanges.subscribe(() => {
       this.calculateTotal();
+    });
+
+    this.reservationForm.get('paymentMethod')?.valueChanges.subscribe(method => {
+      this.showPaypal = method === 'paypal';
+  
+      // Si elige PayPal, renderizar el botón nuevamente
+      if (this.showPaypal) {
+        setTimeout(() => this.loadPaypalButton(), 100); // Esperar a que el DOM esté listo
+      }
     });
   }
 
@@ -184,6 +197,33 @@ export class FormReactivoComponent {
     this.total = pricePerNight * nights * guests;
   }
 
+  showPaypal: boolean = false;
+
+  ngAfterViewInit() {
+    this.loadPaypalButton();
+  }
+
+  loadPaypalButton() {
+    paypal.Buttons({
+      createOrder: (data: any, actions: any) => {
+        const total = this.total.toString(); // Total en MXN
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: total
+            }
+          }]
+        });
+      },
+      onApprove: (data: any, actions: any) => {
+        return actions.order.capture().then((details: any) => {
+          Swal.fire('Pago exitoso', `Gracias, ${details.payer.name.given_name}`, 'success');
+          this.confirm(); // Guarda la reserva
+        });
+      },
+    }).render('#paypal-button-container');
+  }
+
   confirm(): void {
     if (this.reservationForm.valid) {
       const formValue = this.reservationForm.value;
@@ -200,16 +240,8 @@ export class FormReactivoComponent {
 
       this.reservasService.crearReserva(reserva).subscribe({
         next: () => {
-          Swal.fire({
-            title: '¡Reservación exitosa!',
-            text: 'Tus datos han sido guardados en la base de datos.',
-            icon: 'success',
-            background: '#fffaf3',
-            color: '#5B4C3A',
-            iconColor: '#5B4C3A',
-            confirmButtonColor: '#A9745D',
-            confirmButtonText: 'Aceptar'
-          });
+          this.reservaExitosa.set(true);
+          setTimeout(() => this.reservaExitosa.set(false), 5000); 
 
           this.reservationForm.reset();
           this.reservationForm.patchValue({ guests: 1 });

@@ -1,14 +1,18 @@
-.container { 
+.container {
   padding: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  background-color: #fffaf3; /* beige claro */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(91, 76, 58, 0.1);
 }
 
 h2 {
-  color: #5B4C3A;
+  color: #5B4C3A; /* café oscuro */
   margin-bottom: 1.25rem;
   text-align: center;
   font-size: 1.75rem;
+  font-weight: 600;
 }
 
 .no-reservations {
@@ -17,6 +21,7 @@ h2 {
   background-color: #f5f5f5;
   border-radius: 8px;
   margin-top: 1.25rem;
+  border: 1px solid #ddd;
 }
 
 .no-reservations mat-icon {
@@ -35,11 +40,15 @@ h2 {
 .table-container {
   overflow-x: auto;
   margin-top: 1.25rem;
+  border-radius: 8px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th {
@@ -48,21 +57,17 @@ th {
   font-weight: 500;
   position: sticky;
   top: 0;
+  z-index: 1;
 }
 
 td, th {
   padding: 0.75rem 1rem;
   text-align: left;
+  font-size: 0.95rem;
 }
 
-/* Texto café dentro de la tabla */
 .table-container th,
 .table-container td {
-  color: #5B4C3A;
-}
-
-.table-container input,
-.table-container textarea {
   color: #5B4C3A;
 }
 
@@ -74,20 +79,19 @@ tr:hover {
   background-color: #f0e9d9;
 }
 
-button[mat-icon-button] {
-  margin: 0 0.25rem;
-}
-
-button[mat-raised-button] {
-  margin-top: 1rem;
+.table-container input,
+.table-container textarea {
+  color: #5B4C3A;
+  background-color: #fffaf3;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  border-radius: 4px;
+  width: 100%;
+  font-family: inherit;
 }
 
 textarea {
-  width: 100%;
   min-height: 80px;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
 }
 
 input, select {
@@ -95,6 +99,21 @@ input, select {
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 100%;
+}
+
+button[mat-icon-button] {
+  margin: 0 0.25rem;
+  color: #5B4C3A;
+}
+
+button[mat-raised-button] {
+  margin-top: 1rem;
+  background-color: #A9745D;
+  color: white;
+}
+
+button[mat-raised-button]:hover {
+  background-color: #91624e;
 }
 
 .max-w-xs {
@@ -106,3 +125,4 @@ input, select {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+

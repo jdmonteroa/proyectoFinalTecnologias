@@ -5,6 +5,8 @@ import { ActividadesService } from '../actividades.service';
 import { Actividades } from '../actividades';
 import { HttpClientModule } from '@angular/common/http';
 import { ImagenComponent } from '../../vistaPrincipal/imagen/imagen.component';
+import { LoadingService } from '../../../services/loading.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-actividades',
@@ -16,20 +18,28 @@ export class ActividadesComponent implements OnInit {
   actividades: Actividades[] = [];
   actividadesFiltradas: Actividades[] = [];
 
-  constructor(private actividadesService: ActividadesService) { }
+  constructor(
+    private actividadesService: ActividadesService,
+    private loadingService: LoadingService) { }
 
-  ngOnInit(): void {
-    this.actividadesService.obtenerActividades().subscribe({
+ ngOnInit(): void {
+  this.loadingService.show();
+
+  this.actividadesService.obtenerActividades()
+    .pipe(
+      finalize(() => this.loadingService.hide()) //  esto asegura ocultar el loading siempre
+    )
+    .subscribe({
       next: (data) => {
-        console.log(data);
-        this.actividades = data; // Si la API regresa directamente el arreglo
+        this.actividades = data;
         this.actividadesFiltradas = [...this.actividades];
       },
       error: (err) => {
         console.error('Error al obtener actividades:', err);
       }
     });
-  }
+}
+
 
   buscando: boolean = false;
   mensaje: string = '';

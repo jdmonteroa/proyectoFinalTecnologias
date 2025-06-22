@@ -2,7 +2,7 @@
 
 .login-container {
     width: 100%;
-    min-height: 550px;
+    min-height: 700px;
     background-color: rgba(222, 209, 186, 0.95);
     padding: 24px;
     border-radius: 12px;
@@ -13,7 +13,6 @@
     box-sizing: border-box;
 }
 
-/* Pestañas */
 .tab-header {
     display: flex;
     justify-content: space-around;
@@ -46,23 +45,27 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    
 }
-
 
 .login-form {
     display: flex;
     flex-direction: column;
     height: 100%;
-    gap: 12px;
+    gap: 12px; /* mantiene separación razonable */
 }
-/* Campos del formulario */
+
 .form-fields {
     flex: 1;
-    
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px; /* espacio compacto entre campos */
+    margin-bottom: 0; /* elimina margen extra debajo */
+    padding-bottom: 0; /* elimina padding inferior */
+}
+
+/* Último campo no deja margen inferior */
+.login-form .form-fields .form-group:last-child {
+    margin-bottom: 0;
 }
 
 .form-header {
@@ -104,11 +107,11 @@
 }
 
 .button-container {
-    padding-top: 16px;
+    padding-top: 4px; /* reducido para acercar el botón */
+    margin-top: 0; /* sin margen superior extra */
     flex-shrink: 0;
 }
 
-/* Botón de autenticación */
 .auth-btn {
     margin: 0 auto;
     background-color: #463c30;
@@ -126,6 +129,7 @@
     letter-spacing: 0.5px;
     box-shadow: 0 4px 12px rgba(91, 76, 58, 0.3);
 }
+
 .auth-btn:hover {
     background-color: #907a62;
     transform: translateY(-2px);
@@ -164,6 +168,92 @@
 ::ng-deep .mat-raised-button.mat-primary:hover {
     background-color: #3e342a;
 }
+
 ::ng-deep .mat-form-field .mat-prefix {
-    margin-right: 15px; 
+    margin-right: 15px;
 }
+
+.login-options {
+    margin-top: 12px; /* reduce margen */
+    text-align: center;
+}
+
+.account-exists {
+    color: #5B4C3A;
+    margin-bottom: 0;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.account-exists:hover {
+    color: #302920;
+    text-decoration: underline;
+}
+
+.login-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.login-method-btn {
+    background: transparent;
+    border: 1px solid #B9A88F;
+    color: #5B4C3A;
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.login-method-btn:hover {
+    background-color: rgba(222, 209, 186, 0.3);
+    border-color: #5B4C3A;
+}
+
+.login-method-btn mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+}
+
+.sms-login,
+.social-login {
+    margin-top: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.row-fields {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.half-width {
+    flex: 1;
+}
+
+@media (max-width: 600px) {
+    .row-fields {
+        flex-direction: column;
+    }
+    
+    .half-width {
+        width: 100%;
+    }
+}
+

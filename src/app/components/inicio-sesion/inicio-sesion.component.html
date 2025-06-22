@@ -1,109 +1,133 @@
 <div class="login-container mat-elevation-z8">
-    <button mat-icon-button class="close-button" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-    </button>
-    <div class="tab-header">
-        <button [class.active]="activeTab === 'login'" (click)="activeTab = 'login'">Iniciar</button>
-        <button [class.active]="activeTab === 'register'" (click)="activeTab = 'register'">Registrar</button>
-    </div>
+  <button mat-icon-button class="close-button" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
 
-    <div class="form-container">
-        @if (activeTab === 'login') {
-        <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
-            <div class="form-fields">
-                <div class="form-header">
-                    <h2 class="mat-headline-5">Bienvenido</h2>
-                    <p class="subtitle mat-body-1">Por favor inicia sesión para continuar</p>
-                    <div class="divider"></div>
-                </div>
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Nombre completo</mat-label>
-                    <input matInput type="text" name="nombre" [(ngModel)]="nombre" required #nombreCtrl="ngModel">
-                    <mat-icon matPrefix>person</mat-icon>
-                    @if (nombreCtrl.invalid && nombreCtrl.touched) {
-                        <mat-error>El nombre es obligatorio</mat-error>
-                    }
-                </mat-form-field>
+  <!-- Pestañas principales -->
+  <div class="tab-header">
+    <button [class.active]="activeTab === 'login'" (click)="activeTab = 'login'">Admin</button>
+    <button [class.active]="activeTab === 'userLogin'" (click)="activeTab = 'userLogin'">Usuario</button>
+    <button [class.active]="activeTab === 'register'" (click)="activeTab = 'register'">Registro</button>
+  </div>
 
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Nombre de usuario</mat-label>
-                    <input matInput type="text" name="username" [(ngModel)]="username" required #usernameCtrl="ngModel">
-                    <mat-icon matPrefix>account_circle</mat-icon>
-                    @if (usernameCtrl.invalid && usernameCtrl.touched) {
-                        <mat-error>El nombre de usuario es obligatorio</mat-error>
-                    }
-                </mat-form-field>
+  <div class="form-container">
+    <!-- Login ADMIN -->
+    @if (activeTab === 'login') {
+      <form class="login-form" (ngSubmit)="onSubmit()">
+        <div class="form-fields">
+          <div class="form-header">
+            <h2>Acceso Admin</h2>
+          </div>
 
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Contraseña</mat-label>
-                    <input matInput [type]="hidePassword ? 'password' : 'text'" name="password" [(ngModel)]="password" required #passwordCtrl="ngModel">
-                    <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-                    </button>
-                    @if (passwordCtrl.invalid && passwordCtrl.touched) {
-                        <mat-error>La contraseña es obligatoria</mat-error>
-                    }
-                </mat-form-field>
-            </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre</mat-label>
+            <input matInput [(ngModel)]="nombre" name="adminNombre" required />
+          </mat-form-field>
 
+          <mat-form-field appearance="outline">
+            <mat-label>Usuario</mat-label>
+            <input matInput [(ngModel)]="username" name="adminUsername" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Contraseña</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="adminPassword" required />
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" type="submit">Ingresar</button>
+        </div>
+      </form>
+    }
+
+    <!-- Login USUARIO -->
+    @if (activeTab === 'userLogin') {
+      <div class="form-fields">
+        <div class="form-header">
+          <h2>Login Usuario</h2>
+          <p>Selecciona un método de acceso</p>
+        </div>
+
+        <div class="tab-header">
+          <button [class.active]="authMethod === 'password'" (click)="authMethod = 'password'">Contraseña</button>
+          <button [class.active]="authMethod === 'sms'" (click)="authMethod = 'sms'">SMS</button>
+          <button [class.active]="authMethod === 'social'" (click)="authMethod = 'social'">Red Social</button>
+        </div>
+
+        <!-- Login por contraseña -->
+        @if (authMethod === 'password') {
+          <form (ngSubmit)="onUserLogin()">
+            <mat-form-field appearance="outline">
+              <mat-label>Usuario</mat-label>
+              <input matInput [(ngModel)]="userUsername" name="userUsername" required />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Contraseña</mat-label>
+              <input matInput type="password" [(ngModel)]="userPassword" name="userPassword" required />
+            </mat-form-field>
             <div class="button-container">
-                <button mat-raised-button type="submit" class="auth-btn" color="primary" [disabled]="!loginForm.form.valid">
-                    Ingresar
-                </button>
+              <button mat-raised-button color="primary" type="submit">Iniciar sesión</button>
             </div>
-        </form>
-        } @else {
-        <form class="login-form" (ngSubmit)="onRegister()" #registerForm="ngForm">
-            <div class="form-fields">
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Nombre de Usuario</mat-label>
-                    <input matInput type="text" name="regUsername" [(ngModel)]="regUsername" required minlength="6" #regUsernameCtrl="ngModel">
-                    <mat-icon matPrefix>person</mat-icon>
-                    @if (regUsernameCtrl.invalid && regUsernameCtrl.touched) {
-                        <mat-error>Debe tener al menos 6 caracteres</mat-error>
-                    }
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Email</mat-label>
-                    <input matInput type="email" name="regEmail" [(ngModel)]="regEmail" required #regEmailCtrl="ngModel">
-                    <mat-icon matPrefix>email</mat-icon>
-                    @if (regEmailCtrl.invalid && regEmailCtrl.touched) {
-                        <mat-error>
-                            @if (regEmailCtrl.errors?.['required']) {
-                                <div>El correo es obligatorio</div>
-                            }
-                            @if (regEmailCtrl.errors?.['pattern']) {
-                                <div>Formato de correo inválido</div>
-                            }
-                        </mat-error>
-                    }
-                    </mat-form-field>
-
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Contraseña</mat-label>
-                    <input matInput type="password" name="regPassword" [(ngModel)]="regPassword" required minlength="6" #regPasswordCtrl="ngModel">
-                    <mat-icon matPrefix>lock</mat-icon>
-                    @if (regPasswordCtrl.invalid && regPasswordCtrl.touched) {
-                        <mat-error>Mínimo 6 caracteres</mat-error>
-                    }
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Confirmar Contraseña</mat-label>
-                    <input matInput type="password" name="regConfirmPassword" [(ngModel)]="regConfirmPassword" required #regConfirmPasswordCtrl="ngModel">
-                    <mat-icon matPrefix>lock</mat-icon>
-                    @if (regConfirmPasswordCtrl.invalid && regConfirmPasswordCtrl.touched) {
-                        <mat-error>Confirma tu contraseña</mat-error>
-                    }
-                </mat-form-field>
-            </div>
-
-            <div class="button-container">
-                <button mat-raised-button type="submit" class="auth-btn" color="primary" [disabled]="!registerForm.form.valid">
-                    Registrar
-                </button>
-            </div>
-        </form>
+          </form>
         }
-    </div>
+
+        <!-- Login por SMS -->
+        @if (authMethod === 'sms') {
+          <form (ngSubmit)="onSmsLogin()">
+            <mat-form-field appearance="outline">
+              <mat-label>Teléfono</mat-label>
+              <input matInput [(ngModel)]="telefono" name="telefono" required />
+            </mat-form-field>
+            <div class="button-container">
+              <button mat-raised-button color="primary" type="submit">Enviar código</button>
+            </div>
+          </form>
+        }
+
+        <!-- Login por Red Social -->
+        @if (authMethod === 'social') {
+          <form (ngSubmit)="onSocialLogin()">
+            <mat-form-field appearance="outline">
+              <mat-label>Cuenta</mat-label>
+              <input matInput [(ngModel)]="socialAccount" name="socialAccount" required />
+            </mat-form-field>
+            <div class="button-container">
+              <button mat-raised-button color="primary" type="submit">Iniciar con Red Social</button>
+            </div>
+          </form>
+        }
+      </div>
+    }
+
+    <!-- Registro de usuarios -->
+    @if (activeTab === 'register') {
+      <form class="login-form" (ngSubmit)="onRegister()">
+        <div class="form-fields">
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre de Usuario</mat-label>
+            <input matInput [(ngModel)]="regUsername" name="regUsername" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [(ngModel)]="regEmail" name="regEmail" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Contraseña</mat-label>
+            <input matInput type="password" [(ngModel)]="regPassword" name="regPassword" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Confirmar Contraseña</mat-label>
+            <input matInput type="password" [(ngModel)]="regConfirmPassword" name="regConfirmPassword" required />
+          </mat-form-field>
+        </div>
+        <div class="button-container">
+          <button mat-raised-button color="primary" type="submit">Registrar</button>
+        </div>
+      </form>
+    }
+  </div>
 </div>

@@ -10,8 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 
 import Swal from 'sweetalert2';
 import { AuthService } from './shared/auth.service';
-import { AdminLoginResponse, AdminService} from './shared/admin.service';
-import { Usuario, UsuarioService } from '../../../services/usuario.service';
+import { AdminLoginResponse, AdminService } from './shared/admin.service';
+import { FireauthService } from './shared/fireauth.service';
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -36,7 +36,7 @@ export class InicioSesionComponent {
   hidePassword: boolean = true;
 
   // Control de pestañas
-  activeTab: 'login' | 'register' = 'login';
+  activeTab: 'login' | 'register' | 'userLogin' = 'login';
 
   // Campos de registro
   regUsername = '';
@@ -48,97 +48,159 @@ export class InicioSesionComponent {
     private adminService: AdminService,
     private dialogRef: MatDialogRef<InicioSesionComponent>,
     private authService: AuthService,
-    private userService: UsuarioService
-  ) {}
+    private fireAuth: FireauthService
+  ) { }
+
+
+
+  // Para login usuario
+authMethod: 'password' | 'sms' | 'social' = 'password';
+userUsername = '';
+userPassword = '';
+telefono = '';
+socialAccount = '';
+
+// Cambiar vista desde registro a login usuario
+showUserLogin() {
+  this.activeTab = 'userLogin';
+  this.authMethod = 'password';
+}
+
+// Login usuario por contraseña
+onUserLogin(): void {
+  // Aquí llamas a FireauthService.loginUsuario()
+  Swal.fire({
+    title: '¡Login usuario!',
+    text: `Usuario: ${this.userUsername}`,
+    icon: 'info'
+  });
+}
+
+// Login vía SMS
+onSmsLogin(): void {
+  Swal.fire({
+    title: 'Inicio SMS',
+    text: `Teléfono: ${this.telefono}`,
+    icon: 'info'
+  });
+}
+
+// Login red social
+onSocialLogin(): void {
+  Swal.fire({
+    title: 'Inicio con Red Social',
+    text: `Cuenta: ${this.socialAccount}`,
+    icon: 'info'
+  });
+}
+
 
   closeDialog(): void {
     this.dialogRef.close();
   }
 
   onRegister(): void {
-  const usernameTrimmed = this.regUsername.trim();
-  const passwordTrimmed = this.regPassword.trim();
-  const confirmPasswordTrimmed = this.regConfirmPassword.trim();
+    const usernameTrimmed = this.regUsername.trim();
+    const passwordTrimmed = this.regPassword.trim();
+    const confirmPasswordTrimmed = this.regConfirmPassword.trim();
+    const emailTrimmed = this.regEmail.trim();
 
-  if (usernameTrimmed.length < 6) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Nombre muy corto',
-      text: 'El nombre de usuario debe tener al menos 6 caracteres.',
-      background: '#fffaf3',
-      color: '#5B4C3A',
-      iconColor: '#FFA500',
-      confirmButtonColor: '#A9745D',
-      confirmButtonText: 'Ok'
-    });
-    return;
-  }
+    const passwordRegex = /^[A-Za-z0-9_]{8,20}$/;
+    const hasUpperCase = /[A-Z]/.test(passwordTrimmed);
+    const hasDigit = /\d/.test(passwordTrimmed);
 
-  if (passwordTrimmed.length < 6) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Contraseña muy corta',
-      text: 'La contraseña debe tener al menos 6 caracteres.',
-      background: '#fffaf3',
-      color: '#5B4C3A',
-      iconColor: '#FFA500',
-      confirmButtonColor: '#A9745D',
-      confirmButtonText: 'Ok'
-    });
-    return;
-  }
-
-  if (passwordTrimmed !== confirmPasswordTrimmed) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Contraseñas no coinciden',
-      text: 'Asegúrate de que ambas contraseñas sean iguales.',
-      background: '#fffaf3',
-      color: '#5B4C3A',
-      iconColor: '#B23B3B',
-      confirmButtonColor: '#A9745D',
-      confirmButtonText: 'Revisar'
-    });
-    return;
-  }
-
-  const nuevoUsuario: Usuario = {
-    username: usernameTrimmed,     
-    email: this.regEmail.trim(),
-    password: passwordTrimmed
-  };
-
-
-  this.userService.registrarUsuario(nuevoUsuario).subscribe({
-    next: () => {
+    if (usernameTrimmed.length < 6) {
       Swal.fire({
-        icon: 'success',
-        title: 'Registro exitoso',
-        text: 'Tu cuenta ha sido creada correctamente.',
+        icon: 'warning',
+        title: 'Nombre muy corto',
+        text: 'El nombre de usuario debe tener al menos 6 caracteres.',
         background: '#fffaf3',
         color: '#5B4C3A',
-        iconColor: '#5B4C3A',
+        iconColor: '#FFA500',
         confirmButtonColor: '#A9745D',
-        confirmButtonText: 'Aceptar'
+        confirmButtonText: 'Ok'
       });
-      this.dialogRef.close(true); 
-    },
-    error: () => {
+      return;
+    }
+
+    if (!passwordRegex.test(passwordTrimmed)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formato inválido',
+        html: 'La contraseña debe tener entre <b>8 y 20 caracteres</b> y solo puede contener <b>letras</b>, <b>dígitos</b> y el símbolo <b>_</b>.',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#FFA500',
+        confirmButtonColor: '#A9745D',
+        confirmButtonText: 'Ok'
+      });
+      return;
+    }
+
+    if (!hasUpperCase || !hasDigit) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Requisitos de seguridad',
+        text: 'La contraseña debe contener al menos una letra mayúscula y un número.',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#FFA500',
+        confirmButtonColor: '#A9745D',
+        confirmButtonText: 'Ok'
+      });
+      return;
+    }
+
+    if (passwordTrimmed !== confirmPasswordTrimmed) {
       Swal.fire({
         icon: 'error',
-        title: 'Error al registrar',
-        text: 'Ocurrió un problema al crear tu cuenta. Intenta más tarde.',
+        title: 'Contraseñas no coinciden',
+        text: 'Asegúrate de que ambas contraseñas sean iguales.',
         background: '#fffaf3',
         color: '#5B4C3A',
         iconColor: '#B23B3B',
         confirmButtonColor: '#A9745D',
-        confirmButtonText: 'Cerrar'
+        confirmButtonText: 'Revisar'
       });
+      return;
     }
-  });
-}
 
+    const nuevoUsuario = {
+      nombre: usernameTrimmed,
+      usuario: usernameTrimmed,
+      email: emailTrimmed,
+      password: passwordTrimmed,
+      confirmPassword: confirmPasswordTrimmed
+    };
 
+    this.fireAuth.registrarUsuario(nuevoUsuario).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: 'Tu cuenta ha sido creada correctamente.',
+          background: '#fffaf3',
+          color: '#5B4C3A',
+          iconColor: '#5B4C3A',
+          confirmButtonColor: '#A9745D',
+          confirmButtonText: 'Aceptar'
+        });
+        this.dialogRef.close(true);
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al registrar',
+          text: 'Ocurrió un problema al crear tu cuenta. Intenta más tarde.',
+          background: '#fffaf3',
+          color: '#5B4C3A',
+          iconColor: '#B23B3B',
+          confirmButtonColor: '#A9745D',
+          confirmButtonText: 'Cerrar'
+        });
+      }
+    });
+  }
   onSubmit(): void {
     // Validación básica
     if (!this.nombre.trim() || !this.username.trim() || !this.password.trim()) {
@@ -166,7 +228,7 @@ export class InicioSesionComponent {
         this.authService.login(res.usuario, res.nombre);
         Swal.fire({
           title: '¡Inicio de sesión exitoso!',
-          text: `Bienvenido ${res.nombre}`,
+          text:` Bienvenido ${res.nombre}`,
           icon: 'success',
           background: '#fffaf3',
           color: '#5B4C3A',

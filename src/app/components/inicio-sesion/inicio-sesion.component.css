@@ -167,3 +167,59 @@
 ::ng-deep .mat-form-field .mat-prefix {
     margin-right: 15px; 
 }
+
+/* Sección de login para usuarios normales */
+.user-login-options {
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Botones de método de autenticación */
+.user-login-options button {
+  background-color: #D7C7AD;
+  color: #302920;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Playfair Display', serif;
+}
+
+.user-login-options button:hover {
+  background-color: #B9A88F;
+}
+
+/* Contenedor de enlaces tipo "¿Ya tienes cuenta?" */
+.switch-auth {
+  margin-top: 20px;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.switch-auth a {
+  color: #5B4C3A;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.switch-auth a:hover {
+  color: #302920;
+}
+
+/* Estilos para formularios internos de opciones */
+.user-login-options form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Icono de visibilidad en campos de contraseña */
+::ng-deep .mat-icon-button.mat-icon-button {
+  color: #5B4C3A;
+}

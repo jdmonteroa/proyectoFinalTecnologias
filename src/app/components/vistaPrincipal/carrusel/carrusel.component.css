@@ -7,6 +7,8 @@
 /* Las imágenes ocuparán todo el ancho pero con altura controlada */
 #carouselExampleInterval img {
     width: 100%;
+max-width: 1200px;
+
     height: auto;
     max-height: 500px;
     /* Limita la altura */

@@ -25,6 +25,10 @@ export class NavbarComponent {
   isHighContrast: boolean = false;
   isLargeText: boolean = false;
 
+  menuAbierto: boolean = false;
+
+
+
   updateFont(newFont: string) {
     this.fontFamily = newFont;
     document.body.style.fontFamily = newFont;

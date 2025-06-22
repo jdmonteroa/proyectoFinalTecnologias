@@ -4,12 +4,13 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CorreoService } from '../../../../services/correo.service';
-import { ContactoService } from '../../../../services/contacto.service';
+import { Contacto, ContactoService } from '../../../../services/contacto.service';
+import { QrVisualizadorComponent } from '../qr-visualizador/qr-visualizador.component';
 
 @Component({
   selector: 'app-contacto',
   standalone: true,
-  imports: [RouterModule, FormsModule, NgClass, NgStyle],
+  imports: [RouterModule, FormsModule, NgClass, NgStyle, QrVisualizadorComponent],
   templateUrl: './contacto.component.html',
   styleUrl: './contacto.component.css'
 })
@@ -31,6 +32,7 @@ export class ContactoComponent {
     private contactoService: ContactoService  // <-- nuevo servicio agregado
   ) { }
 
+  qrDisponible: boolean = false;
   enviarFormulario(formulario: NgForm) {
     if (formulario.valid) {
       const contacto = {
@@ -40,8 +42,10 @@ export class ContactoComponent {
         Mensaje: this.datos.mensaje       // Firestore espera "Mensaje"
       };
 
+
       this.contactoService.guardarContacto(contacto).subscribe({
         next: () => {
+          this.qrDisponible = true;
           // Luego de guardar en la BD, envía el correo
           this.correoService.enviarCorreo(this.datos).subscribe({
             next: () => {
@@ -71,5 +75,20 @@ export class ContactoComponent {
     } else {
       Swal.fire('Error', 'Por favor completa todos los campos correctamente', 'error');
     }
+  }
+
+  ultimoContacto: Contacto | null = null;
+
+  generarQR() {
+  this.contactoService.obtenerContactos().subscribe({
+    next: (contactos: Contacto[]) => {
+      if (contactos.length > 0) {
+        this.ultimoContacto = contactos[contactos.length - 1];
+      }
+    },
+    error: (err: any) => {
+      console.error('Error al obtener contactos:', err);
+    }
+  });
   }
 }

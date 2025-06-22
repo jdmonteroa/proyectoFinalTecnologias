@@ -1,22 +1,33 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, UserCredential } from 'firebase/auth';
+import { Auth } from '@angular/fire/auth';
+import { Observable, from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FireauthService {
-  private apiURL = 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private auth: Auth) {}
 
-  registrarUsuario(data: {
-    nombre: string;
-    usuario: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }): Observable<any> {
-    return this.http.post(`${this.apiURL}/registrar-usuario`, data);
+  /**
+   * Login con correo y contraseña
+   */
+  loginUsuario(email: string, password: string): Observable<UserCredential> {
+    return from(signInWithEmailAndPassword(this.auth, email, password));
+  }
+
+  /**
+   * Registro con correo y contraseña
+   */
+  registrarUsuario(email: string, password: string): Observable<UserCredential> {
+    return from(createUserWithEmailAndPassword(this.auth, email, password));
+  }
+
+  /**
+   * Cerrar sesión
+   */
+  logout(): Observable<void> {
+    return from(signOut(this.auth));
   }
 }

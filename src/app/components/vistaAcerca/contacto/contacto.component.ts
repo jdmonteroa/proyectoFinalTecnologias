@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { CorreoService } from '../../../../services/correo.service';
 import { Contacto, ContactoService } from '../../../../services/contacto.service';
 import { QrVisualizadorComponent } from '../qr-visualizador/qr-visualizador.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-contacto',
@@ -27,12 +28,16 @@ export class ContactoComponent {
     { nombre: 'apellido', etiqueta: 'Apellido' }
   ];
 
+  qrDisponible: boolean = false;
+  ultimoContacto: Contacto | null = null;
+
   constructor(
     private correoService: CorreoService,
-    private contactoService: ContactoService  // <-- nuevo servicio agregado
+    private contactoService: ContactoService,  // <-- nuevo servicio agregado
+    private http: HttpClient
   ) { }
 
-  qrDisponible: boolean = false;
+
   enviarFormulario(formulario: NgForm) {
     if (formulario.valid) {
       const contacto = {
@@ -44,8 +49,19 @@ export class ContactoComponent {
 
 
       this.contactoService.guardarContacto(contacto).subscribe({
-        next: () => {
-          this.qrDisponible = true;
+        next: (res) => {
+          const idRecienCreado = res.id;
+
+          this.http.get<Contacto>(`http://localhost:3000/api/qr/${idRecienCreado}`).subscribe({
+            next: (contacto) => {
+              this.ultimoContacto = contacto;
+              this.qrDisponible = true;
+            },
+            error: (err) => {
+              console.error('Error al obtener el contacto desde la API QR', err);
+            }
+          });
+
           // Luego de guardar en la BD, envía el correo
           this.correoService.enviarCorreo(this.datos).subscribe({
             next: () => {
@@ -75,20 +91,5 @@ export class ContactoComponent {
     } else {
       Swal.fire('Error', 'Por favor completa todos los campos correctamente', 'error');
     }
-  }
-
-  ultimoContacto: Contacto | null = null;
-
-  generarQR() {
-  this.contactoService.obtenerContactos().subscribe({
-    next: (contactos: Contacto[]) => {
-      if (contactos.length > 0) {
-        this.ultimoContacto = contactos[contactos.length - 1];
-      }
-    },
-    error: (err: any) => {
-      console.error('Error al obtener contactos:', err);
-    }
-  });
   }
 }

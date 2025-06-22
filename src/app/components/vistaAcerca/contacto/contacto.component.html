@@ -66,12 +66,14 @@
       </div>
     }
   
-    <button type="submit" [disabled]="formulario.invalid" (click)="generarQR()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+    <button type="submit" [disabled]="formulario.invalid" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
       Enviar
     </button>
 
   <!-- Visualizador -->
-    <app-qr-visualizador [datos]="ultimoContacto" />
+  @if (qrDisponible && ultimoContacto) {
+  <app-qr-visualizador [datos]="ultimoContacto" />
+  }
   </form>
 
   

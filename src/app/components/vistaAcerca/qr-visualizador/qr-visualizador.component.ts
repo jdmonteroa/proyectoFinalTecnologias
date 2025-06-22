@@ -9,7 +9,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
 })
 export class QrVisualizadorComponent {
    @Input() datos: any;
-    valorQR: string = '';
+  valorQR: string = '';
 
   ngOnChanges(): void {
     if (this.datos) {

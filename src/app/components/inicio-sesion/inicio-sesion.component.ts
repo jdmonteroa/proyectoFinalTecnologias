@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 import { AuthService } from './shared/auth.service';
 import { AdminLoginResponse, AdminService } from './shared/admin.service';
 import { FireauthService } from './shared/fireauth.service';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -23,7 +24,8 @@ import { FireauthService } from './shared/fireauth.service';
     MatInputModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSelectModule
   ],
   templateUrl: './inicio-sesion.component.html',
   styleUrl: './inicio-sesion.component.css'
@@ -43,6 +45,8 @@ export class InicioSesionComponent {
   regEmail = '';
   regPassword = '';
   regConfirmPassword: string = '';
+  regPhone: string = '';  
+  regSocial: string = '';
 
   constructor(
     private adminService: AdminService,
@@ -61,11 +65,11 @@ telefono = '';
 socialAccount = '';
 
 // Cambiar vista desde registro a login usuario
-showUserLogin() {
+// Cambiar vista desde registro a login usuario
+showUserLogin(method: 'password' | 'sms' | 'social' = 'password') {
   this.activeTab = 'userLogin';
-  this.authMethod = 'password';
+  this.authMethod = method;
 }
-
 // Login usuario por contraseña
 onUserLogin(): void {
   // Aquí llamas a FireauthService.loginUsuario()
@@ -170,7 +174,9 @@ onSocialLogin(): void {
       usuario: usernameTrimmed,
       email: emailTrimmed,
       password: passwordTrimmed,
-      confirmPassword: confirmPasswordTrimmed
+      confirmPassword: confirmPasswordTrimmed,
+      telefono: this.regPhone.trim(),       
+      redSocial: this.regSocial.trim()     
     };
 
     this.fireAuth.registrarUsuario(nuevoUsuario).subscribe({

@@ -2,7 +2,7 @@
 
 .login-container {
     width: 100%;
-    min-height: 550px;
+    min-height: 700px;
     background-color: rgba(222, 209, 186, 0.95);
     padding: 24px;
     border-radius: 12px;
@@ -13,7 +13,6 @@
     box-sizing: border-box;
 }
 
-/* Pestañas */
 .tab-header {
     display: flex;
     justify-content: space-around;
@@ -56,10 +55,9 @@
     height: 100%;
     gap: 12px;
 }
-/* Campos del formulario */
+
 .form-fields {
     flex: 1;
-    
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -108,7 +106,7 @@
     flex-shrink: 0;
 }
 
-/* Botón de autenticación */
+
 .auth-btn {
     margin: 0 auto;
     background-color: #463c30;
@@ -168,58 +166,77 @@
     margin-right: 15px; 
 }
 
-/* Sección de login para usuarios normales */
-.user-login-options {
-  padding-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.login-options {
+    margin-top: 20px;
+    text-align: center;
 }
 
-/* Botones de método de autenticación */
-.user-login-options button {
-  background-color: #D7C7AD;
-  color: #302920;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 8px 16px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Playfair Display', serif;
+.account-exists {
+    color: #5B4C3A;
+    margin-bottom: 15px;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-.user-login-options button:hover {
-  background-color: #B9A88F;
+.login-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-/* Contenedor de enlaces tipo "¿Ya tienes cuenta?" */
-.switch-auth {
-  margin-top: 20px;
-  text-align: center;
-  font-family: 'Segoe UI', sans-serif;
+.login-method-btn {
+    background: transparent;
+    border: 1px solid #B9A88F;
+    color: #5B4C3A;
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-.switch-auth a {
-  color: #5B4C3A;
-  font-weight: bold;
-  text-decoration: underline;
-  cursor: pointer;
-  transition: color 0.2s ease;
+.login-method-btn:hover {
+    background-color: rgba(222, 209, 186, 0.3);
+    border-color: #5B4C3A;
 }
 
-.switch-auth a:hover {
-  color: #302920;
+.login-method-btn mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
 }
 
-/* Estilos para formularios internos de opciones */
-.user-login-options form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.sms-login,
+.social-login {
+    margin-top: 15px;
+    animation: fadeIn 0.3s ease;
 }
 
-/* Icono de visibilidad en campos de contraseña */
-::ng-deep .mat-icon-button.mat-icon-button {
-  color: #5B4C3A;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.row-fields {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.half-width {
+    flex: 1;
+}
+
+@media (max-width: 600px) {
+    .row-fields {
+        flex-direction: column;
+    }
+    
+    .half-width {
+        width: 100%;
+    }
 }

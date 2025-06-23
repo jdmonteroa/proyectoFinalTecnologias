@@ -1,0 +1,12 @@
+<div style="display: block;">
+  <canvas
+    baseChart
+    [data]="{ labels: chartLabels, datasets: [{ data: chartData, label: 'Habitaciones más reservadas' }] }"
+    [type]="chartType"
+    [options]="chartOptions">
+  </canvas>
+
+ <p [style.display]="chartLabels.length && chartData.length ? 'none' : 'block'">
+  No hay datos de habitaciones reservadas.
+</p>
+</div>

@@ -19,7 +19,7 @@ export class AppComponent {
   loading$: Observable<boolean>;
 
   constructor(private loadingService: LoadingService) {
-    this.loading$ = this.loadingService.loading$; // ✅ se asigna después de inicializar loadingService
+    this.loading$ = this.loadingService.loading$; //  se asigna después de inicializar loadingService
   }
 }
 

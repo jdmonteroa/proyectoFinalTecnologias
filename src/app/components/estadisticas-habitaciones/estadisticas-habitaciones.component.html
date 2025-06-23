@@ -1,0 +1,24 @@
+<div class="chart-container">
+  <canvas
+    baseChart
+    [data]="{
+      labels: chartLabels,
+      datasets: [
+        {
+          data: chartData,
+          label: 'Habitaciones más reservadas',
+          backgroundColor: ['#d6c2a1', '#bfa980', '#a0855b', '#e9dcc3', '#8c7356'],
+          borderColor: '#5e4b3c',
+          borderWidth: 1
+        }
+      ]
+    }"
+    [type]="chartType"
+    [options]="chartOptions">
+  </canvas>
+
+  <p [style.display]="chartLabels.length && chartData.length ? 'none' : 'block'">
+    No hay datos de habitaciones reservadas.
+  </p>
+</div>
+

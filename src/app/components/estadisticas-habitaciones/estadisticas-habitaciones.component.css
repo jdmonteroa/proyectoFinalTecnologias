@@ -1,0 +1,21 @@
+.chart-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  background-color: #fefaf3; /* beige claro */
+  border-radius: 16px;
+  border: 1px solid #d8cbb8; /* marrón claro */
+  box-shadow: 0 6px 20px rgba(91, 76, 58, 0.1); /* sombra café tenue */
+  padding: 2rem;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.chart-container canvas {
+  max-height: 320px;
+}
+
+.chart-container p {
+  margin-top: 1rem;
+  color: #5e4b3c;
+  font-style: italic;
+}

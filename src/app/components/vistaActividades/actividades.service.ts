@@ -13,7 +13,7 @@ export class ActividadesService {
 
   obtenerActividades(): Observable<Actividades[]> {
   return this.http.get<{ actividades: Actividades[] }>(this.apiUrl).pipe(
-    delay(5000), // 2 segundos de carga
+    delay(3000), 
     map(response => response.actividades),
     catchError(this.handleError<Actividades[]>('obtenerActividades', []))
   );

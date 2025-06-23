@@ -69,6 +69,11 @@
     <button type="submit" [disabled]="formulario.invalid" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
       Enviar
     </button>
+
+  <!-- Visualizador -->
+  @if (qrDisponible && ultimoContacto) {
+  <app-qr-visualizador [datos]="ultimoContacto" />
+  }
   </form>
-  
+
   

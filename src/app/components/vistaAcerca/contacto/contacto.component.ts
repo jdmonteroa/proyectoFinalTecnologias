@@ -4,12 +4,14 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CorreoService } from '../../../../services/correo.service';
-import { ContactoService } from '../../../../services/contacto.service';
+import { Contacto, ContactoService } from '../../../../services/contacto.service';
+import { QrVisualizadorComponent } from '../qr-visualizador/qr-visualizador.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-contacto',
   standalone: true,
-  imports: [RouterModule, FormsModule, NgClass, NgStyle],
+  imports: [RouterModule, FormsModule, NgClass, NgStyle, QrVisualizadorComponent],
   templateUrl: './contacto.component.html',
   styleUrl: './contacto.component.css'
 })
@@ -26,10 +28,15 @@ export class ContactoComponent {
     { nombre: 'apellido', etiqueta: 'Apellido' }
   ];
 
+  qrDisponible: boolean = false;
+  ultimoContacto: Contacto | null = null;
+
   constructor(
     private correoService: CorreoService,
-    private contactoService: ContactoService  // <-- nuevo servicio agregado
+    private contactoService: ContactoService,  // <-- nuevo servicio agregado
+    private http: HttpClient
   ) { }
+
 
   enviarFormulario(formulario: NgForm) {
     if (formulario.valid) {
@@ -40,8 +47,21 @@ export class ContactoComponent {
         Mensaje: this.datos.mensaje       // Firestore espera "Mensaje"
       };
 
+
       this.contactoService.guardarContacto(contacto).subscribe({
-        next: () => {
+        next: (res) => {
+          const idRecienCreado = res.id;
+
+          this.http.get<Contacto>(`http://localhost:3000/api/qr/${idRecienCreado}`).subscribe({
+            next: (contacto) => {
+              this.ultimoContacto = contacto;
+              this.qrDisponible = true;
+            },
+            error: (err) => {
+              console.error('Error al obtener el contacto desde la API QR', err);
+            }
+          });
+
           // Luego de guardar en la BD, envía el correo
           this.correoService.enviarCorreo(this.datos).subscribe({
             next: () => {

@@ -7,6 +7,11 @@ body{
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 .high-contrast {
   background-color: #5a4d3a !important;
   color: rgb(252, 252, 252) !important;
@@ -24,4 +29,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 body, main, nav {
   transition: all 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* <– este evita el scroll horizontal */
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from 'firebase/auth';
 
 import Swal from 'sweetalert2';
 import { AuthService } from './shared/auth.service';
@@ -15,6 +16,7 @@ import { FireauthService } from './shared/fireauth.service';
 import { MatSelectModule } from '@angular/material/select';
 import { updateProfile } from 'firebase/auth';
 import { ConfirmationResult } from 'firebase/auth';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
@@ -28,7 +30,7 @@ import { ConfirmationResult } from 'firebase/auth';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatSelectModule
+    MatSelectModule, CommonModule, ReactiveFormsModule
   ],
   templateUrl: './inicio-sesion.component.html',
   styleUrl: './inicio-sesion.component.css'
@@ -66,9 +68,7 @@ export class InicioSesionComponent implements OnInit {
     private fireAuth: FireauthService
   ) { }
 
-  ngOnInit(): void {
-    this.fireAuth.initRecaptcha('recaptcha-container');
-  }
+  ngOnInit(): void {}
 
   // Para login usuario
   authMethod: 'password' | 'sms' | 'social' = 'password';
@@ -120,6 +120,8 @@ export class InicioSesionComponent implements OnInit {
 
   // ✅ LOGIN POR SMS
   onSmsLogin(): void {
+    this.fireAuth.initRecaptcha('recaptcha-container');
+
     this.fireAuth.enviarCodigo(this.telefono).subscribe({
       next: (result) => {
         this.confirmationResult = result;
@@ -137,7 +139,7 @@ export class InicioSesionComponent implements OnInit {
 
   confirmarCodigo(): void {
     this.fireAuth.confirmarCodigo(this.confirmationResult, this.codigoSMS).subscribe({
-      next: (cred) => {
+      next: () => {
         Swal.fire('¡Listo!', 'Inicio de sesión exitoso con teléfono.', 'success');
       },
       error: (err) => {
@@ -145,6 +147,7 @@ export class InicioSesionComponent implements OnInit {
       }
     });
   }
+
 
   // ✅ LOGIN CON GOOGLE
   onSocialLogin(): void {

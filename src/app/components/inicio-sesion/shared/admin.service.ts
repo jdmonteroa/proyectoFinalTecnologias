@@ -6,6 +6,7 @@ export interface AdminLoginResponse {
   nombre: string;
   usuario: string;
   img?: string;
+  role: 'admin';  // Aquí agregas role
 }
 
 @Injectable({

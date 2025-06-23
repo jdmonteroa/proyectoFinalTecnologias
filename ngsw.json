@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1750700313536,
+  "timestamp": 1750721445265,
   "index": "/proyectoFinalTecnologias/index.html",
   "assetGroups": [
     {
@@ -12,7 +12,7 @@
       },
       "urls": [
         "/proyectoFinalTecnologias/index.html",
-        "/proyectoFinalTecnologias/main-7IPTYY7Q.js",
+        "/proyectoFinalTecnologias/main-SRSRTXBR.js",
         "/proyectoFinalTecnologias/manifest.webmanifest",
         "/proyectoFinalTecnologias/polyfills-FFHMD2TL.js",
         "/proyectoFinalTecnologias/scripts-6OBTFB5I.js",
@@ -29,6 +29,7 @@
       },
       "urls": [
         "/proyectoFinalTecnologias/favicon.png",
+        "/proyectoFinalTecnologias/google.png",
         "/proyectoFinalTecnologias/icons/apple-touch-icon.png",
         "/proyectoFinalTecnologias/icons/web-app-manifest-192x192.png",
         "/proyectoFinalTecnologias/icons/web-app-manifest-512x512.png",
@@ -82,6 +83,7 @@
   "dataGroups": [],
   "hashTable": {
     "/proyectoFinalTecnologias/favicon.png": "c2a2808f6a5224a2f3101e04a4b7745a49613cc1",
+    "/proyectoFinalTecnologias/google.png": "000b5be92956113a6aca2b881f90c6d00a01c9c0",
     "/proyectoFinalTecnologias/icons/apple-touch-icon.png": "ab869515399ae9aa7829cae31d8489b30ab4340f",
     "/proyectoFinalTecnologias/icons/web-app-manifest-192x192.png": "92a961d08f7a55122e49dd66991fcc01634c4c67",
     "/proyectoFinalTecnologias/icons/web-app-manifest-512x512.png": "07af61916a053260465b49b262b3a1f20589edc6",
@@ -126,10 +128,10 @@
     "/proyectoFinalTecnologias/img/noche_karaoke.jpg": "982fd8756ae17f74fd12d51ce31d4ac191add2a5",
     "/proyectoFinalTecnologias/img/paseo_bicicleta.webp": "ca34d16322ae97bc181541c2457839c1f2baee77",
     "/proyectoFinalTecnologias/img/taller_arte.avif": "d241e935522303f70efc5324b7ddfe987659af6b",
-    "/proyectoFinalTecnologias/index.html": "df756834df1c896231f295246583f2318a448178",
+    "/proyectoFinalTecnologias/index.html": "c690ee1073158086fe5f9e32f41866564af1b9de",
     "/proyectoFinalTecnologias/logoFondoClaro.png": "c17731add56e0cee4ff3a5c21989c9f6e97da08b",
     "/proyectoFinalTecnologias/logoFondoOscuro.png": "d77dba3893a0d88ec7507322fd207b4bb21279b4",
-    "/proyectoFinalTecnologias/main-7IPTYY7Q.js": "8043be1fb87dcc2c2c98a0257c96a01573897200",
+    "/proyectoFinalTecnologias/main-SRSRTXBR.js": "4dae64f323da8a9c1954b24601a9c281768c403d",
     "/proyectoFinalTecnologias/manifest.webmanifest": "a30ad017ac698bde605786496e2444139358e6f9",
     "/proyectoFinalTecnologias/polyfills-FFHMD2TL.js": "f49b49a155bc7d192db62a4c15d0a612b460a667",
     "/proyectoFinalTecnologias/scripts-6OBTFB5I.js": "1f0569324d2238c04ea443c2f3e49d41bb1a25d4",

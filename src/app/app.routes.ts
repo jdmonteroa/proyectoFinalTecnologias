@@ -9,9 +9,11 @@ import { BuscarComponent } from './components/vistaActividades/buscar/buscar.com
 import { ReservationsComponent } from './components/reservations/reservations.component';
 import { ListaContactosComponent } from './components/lista-contactos/lista-contactos.component';
 import { ContenedorComponent } from './components/VistaDesarrolladores/contenedor/contenedor.component';
+import { VistaContactoComponent } from './components/vista-contacto/vista-contacto.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
+    {path: 'contacto', component: VistaContactoComponent},
     {path: 'home', component: HomeComponent},
     {path: 'reservaciones', component: ReservacionesComponent},
     {path: 'instalaciones', component: InstalacionesComponent},

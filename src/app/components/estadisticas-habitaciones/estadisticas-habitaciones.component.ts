@@ -19,8 +19,51 @@ export class EstadisticasHabitacionesComponent implements OnInit {
   chartType: ChartType = 'bar';
 
   chartOptions: ChartConfiguration['options'] = {
-    responsive: true
-  };
+  responsive: true,
+  plugins: {
+    legend: {
+      labels: {
+        color: '#5e4b3c',
+        font: {
+          family: 'Segoe UI',
+          size: 13
+        }
+      }
+    },
+    tooltip: {
+      backgroundColor: '#d8cbb8',
+      titleColor: '#3d2f23',
+      bodyColor: '#3d2f23'
+    }
+  },
+  scales: {
+    x: {
+      ticks: {
+        color: '#5e4b3c',
+        font: {
+          size: 12,
+          family: 'Segoe UI'
+        }
+      },
+      grid: {
+        color: '#ece3d9'
+      }
+    },
+    y: {
+      ticks: {
+        color: '#5e4b3c',
+        font: {
+          size: 12,
+          family: 'Segoe UI'
+        }
+      },
+      grid: {
+        color: '#ece3d9'
+      }
+    }
+  }
+};
+
 
   constructor(private reservasService: ReservasService) {}
 

@@ -44,17 +44,34 @@
                     <input matInput [type]="hidePassword ? 'password' : 'text'" name="password" [(ngModel)]="password"
                         required #passwordCtrl="ngModel">
                     <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-                        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </button>
                     @if (passwordCtrl.invalid && passwordCtrl.touched) {
                     <mat-error>La contraseña es obligatoria</mat-error>
                     }
                 </mat-form-field>
+                
+                <div class="login-status">
+                    @if (loginAttempts > 0) {
+                    <p class="attempts-warning" [class.last-attempt]="loginAttempts >= maxAttempts - 1">
+                        Intentos fallidos: {{loginAttempts}}/{{maxAttempts}}
+                    </p>
+                    }
+                    @if (isAccountLocked) {
+                    <div class="unlock-account-container">
+                        <p class="locked-message">Tu cuenta ha sido bloqueada</p>
+                        <button mat-raised-button 
+                                color="warn" 
+                                class="unlock-btn"
+                                (click)="showUnlockAccountDialog()">
+                        Desbloquear cuenta
+                        </button>
+                    </div>
+                    }
+                </div>
             </div>
-
             <div class="button-container">
                 <button mat-raised-button type="submit" class="auth-btn" color="primary"
-                    [disabled]="!loginForm.form.valid">
+                [disabled]="!loginForm.form.valid || isAccountLocked">
                     Ingresar
                 </button>
             </div>

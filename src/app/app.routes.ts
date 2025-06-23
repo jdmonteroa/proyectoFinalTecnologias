@@ -10,6 +10,7 @@ import { ReservationsComponent } from './components/reservations/reservations.co
 import { ListaContactosComponent } from './components/lista-contactos/lista-contactos.component';
 import { ContenedorComponent } from './components/VistaDesarrolladores/contenedor/contenedor.component';
 import { VistaContactoComponent } from './components/vista-contacto/vista-contacto.component';
+import { EstadisticasComponent } from './components/estadisticas/estadisticas.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -23,5 +24,6 @@ export const routes: Routes = [
     {path: 'buscador/:nombre', component: BuscarComponent},
     {path: 'tab', component: ReservationsComponent},
     {path: 'contact', component: ListaContactosComponent},
-    {path: 'desa', component: ContenedorComponent}
+    {path: 'desa', component: ContenedorComponent},
+    {path: 'estadisticas', component: EstadisticasComponent},
 ];

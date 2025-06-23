@@ -18,7 +18,24 @@ export class EstadisticasReservasComponent implements OnInit {
   chartType: ChartType = 'pie';
 
   chartOptions: ChartConfiguration['options'] = {
-    responsive: true
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: '#5e4b3c',
+          font: {
+            family: 'Segoe UI',
+            size: 13
+          }
+        }
+      },
+      tooltip: {
+        backgroundColor: '#d8cbb8',
+        titleColor: '#3d2f23',
+        bodyColor: '#3d2f23'
+      }
+    }
   };
 
   constructor(private reservasService: ReservasService) {}
@@ -41,4 +58,20 @@ export class EstadisticasReservasComponent implements OnInit {
       this.chartData = [conteo.Tarjeta, conteo.Paypal, conteo.Efectivo];
     });
   }
+
+  get chartDisplayData() {
+    return {
+      labels: this.chartLabels,
+      datasets: [
+        {
+          data: this.chartData,
+          label: 'Métodos de Pago',
+          backgroundColor: ['#d6c2a1', '#a0855b', '#e9dcc3'],
+          borderColor: '#5e4b3c',
+          borderWidth: 1
+        }
+      ]
+    };
+  }
 }
+

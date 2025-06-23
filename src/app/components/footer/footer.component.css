@@ -2,9 +2,19 @@
     background-color: #5B4C3A; 
     color: #F4EFE6;
     text-align: center;
-    padding: 15px 0;
     font-family: 'Segoe UI', sans-serif;
     font-size: 14px;
+     padding: 1rem;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 768px) {
+  .footer {
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .footer-container {

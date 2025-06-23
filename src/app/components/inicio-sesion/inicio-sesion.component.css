@@ -256,3 +256,73 @@
     }
 }
 
+.login-status {
+    margin-top: 12px;
+    text-align: center;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.attempts-warning {
+    color: #B23B3B;
+    font-weight: 600;
+    margin: 8px 0;
+    font-size: 14px;
+    animation: shake 0.5s;
+}
+
+.attempts-warning.last-attempt {
+    color: #D32F2F;
+    font-weight: 700;
+}
+
+.locked-message {
+    color: #D32F2F;
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+.unlock-btn {
+    background-color: #D32F2F !important;
+    color: white !important;
+    margin: 0 auto;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    width: auto;
+    transition: all 0.3s ease;
+}
+
+.unlock-btn:hover {
+    background-color: #B23B3B !important;
+    transform: translateY(-2px);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+::ng-deep .unlock-dialog .mat-dialog-container {
+    background-color: rgba(222, 209, 186, 0.98);
+    border: 1px solid #B9A88F;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+::ng-deep .unlock-dialog .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #B9A88F;
+}
+
+::ng-deep .unlock-dialog .mat-form-field-label {
+    color: #5B4C3A !important;
+}
+
+::ng-deep .unlock-dialog .mat-input-element {
+    caret-color: #5B4C3A !important;
+}

@@ -53,4 +53,6 @@ export class EstadisticasHabitacionesComponent implements OnInit {
       }
     });
   }
+
+  
 }

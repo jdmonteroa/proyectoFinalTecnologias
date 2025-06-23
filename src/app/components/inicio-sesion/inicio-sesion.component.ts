@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -13,6 +13,8 @@ import { AuthService } from './shared/auth.service';
 import { AdminLoginResponse, AdminService } from './shared/admin.service';
 import { FireauthService } from './shared/fireauth.service';
 import { ConfirmationResult, updateProfile } from 'firebase/auth';
+
+declare var grecaptcha: any;
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -30,8 +32,7 @@ import { ConfirmationResult, updateProfile } from 'firebase/auth';
   templateUrl: './inicio-sesion.component.html',
   styleUrl: './inicio-sesion.component.css'
 })
-export class InicioSesionComponent{
-  // Login campos
+export class InicioSesionComponent implements OnInit {
   username: string = '';
   password: string = '';
   nombre: string = '';
@@ -61,12 +62,73 @@ export class InicioSesionComponent{
   authMethod: 'password' | 'sms' | 'social' = 'password';
   userUsername = '';
 
+  captchaToken: string | null = null;
+  captchaWidgetId: any = null;
+
   constructor(
     private adminService: AdminService,
     private dialogRef: MatDialogRef<InicioSesionComponent>,
     private authService: AuthService,
     private fireAuth: FireauthService
-  ) { }
+  ) {}
+
+  ngOnInit() {
+    this.loadRecaptchaScript();
+  }
+
+  private loadRecaptchaScript() {
+    if (document.getElementById('recaptcha-script')) {
+      this.initializeRecaptcha();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = 'recaptcha-script';
+    script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => this.initializeRecaptcha();
+    document.head.appendChild(script);
+  }
+
+  private initializeRecaptcha() {
+    grecaptcha.ready(() => {
+      console.log('reCAPTCHA está listo');
+    });
+  }
+
+  renderCaptcha(elementId: string = 'g-recaptcha'): void {
+    grecaptcha.ready(() => {
+      this.captchaWidgetId = grecaptcha.render(elementId, {
+        sitekey: '6LdEO2srAAAAAEeP8pYpCvqgIr9QtvTqQs3XCFlp',
+        callback: (token: string) => this.onCaptchaSuccess(token),
+        'expired-callback': () => this.onCaptchaExpired(),
+        'error-callback': () => this.onCaptchaError()
+      });
+    });
+  }
+
+  onCaptchaSuccess(token: string) {
+    this.captchaToken = token;
+    console.log('reCAPTCHA token:', token);
+  }
+
+  onCaptchaExpired() {
+    this.captchaToken = null;
+    console.log('reCAPTCHA expirado');
+  }
+
+  onCaptchaError() {
+    this.captchaToken = null;
+    console.error('Error en reCAPTCHA');
+  }
+
+  resetCaptcha() {
+    this.captchaToken = null;
+    if (this.captchaWidgetId && grecaptcha.reset) {
+      grecaptcha.reset(this.captchaWidgetId);
+    }
+  }
 
   showUserLogin(method: 'password' | 'sms' | 'social' = 'password') {
     this.activeTab = 'userLogin';
@@ -82,15 +144,35 @@ export class InicioSesionComponent{
       return;
     }
 
+    if (!this.captchaToken) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Verificación requerida',
+        text: 'Por favor completa el reCAPTCHA para continuar.'
+      });
+      return;
+    }
+
     this.fireAuth.loginUsuario(emailTrimmed, passwordTrimmed).subscribe({
       next: (cred) => {
         const nombreUsuario = cred.user.displayName || 'Usuario';
-        Swal.fire({ icon: 'success', title: `¡Bienvenido, ${nombreUsuario}!`, text: 'Has iniciado sesión exitosamente.' });
+
+        Swal.fire({
+          icon: 'success',
+          title: `¡Bienvenido, ${nombreUsuario}!`,
+          text: 'Has iniciado sesión exitosamente.'
+        });
+
         this.authService.login(nombreUsuario, 'user');
         this.dialogRef.close(true);
       },
       error: () => {
-        Swal.fire({ icon: 'error', title: 'Error al iniciar sesión', text: 'Correo o contraseña incorrectos.' });
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al iniciar sesión',
+          text: 'Correo o contraseña incorrectos.'
+        });
+        this.resetCaptcha();
       }
     });
   }
@@ -117,6 +199,9 @@ export class InicioSesionComponent{
       }
     });
   }
+
+  // Aquí se mantienen los demás métodos sin cambios...
+  // onRegister(), onSubmit(), showUnlockAccountDialog(), etc.
 
   closeDialog(): void {
     this.dialogRef.close();
@@ -328,3 +413,4 @@ export class InicioSesionComponent{
     });
   }
 }
+

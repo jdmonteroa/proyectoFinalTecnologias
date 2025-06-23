@@ -1,3 +1,4 @@
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <div class="login-container mat-elevation-z8">
     <button mat-icon-button class="close-button" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
@@ -154,6 +155,7 @@
                 <button [class.active]="authMethod === 'sms'" (click)="authMethod = 'sms'">SMS</button>
                 <button [class.active]="authMethod === 'social'" (click)="authMethod = 'social'">Gmail</button>
             </div>
+            <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
 
             <!-- Contraseña (Login con Firebase por correo) -->
             @if (authMethod === 'password') {
@@ -176,8 +178,13 @@
                     @if (userPasswordCtrl.invalid && userPasswordCtrl.touched) {
                     <mat-error>La contraseña es obligatoria</mat-error>
                     }
+                    
                 </mat-form-field>
-
+                @if (userEmail && userPassword) {
+    <div class="form-group">
+      <div id="g-recaptcha" class="g-recaptcha"></div>
+    </div>
+  }
                 <div class="button-container">
                     <button mat-raised-button color="primary" type="submit" class="auth-btn"
                         [disabled]="!userLoginForm.form.valid">

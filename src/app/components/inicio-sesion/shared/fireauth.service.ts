@@ -40,10 +40,22 @@ export class FireauthService {
    * Inicializar reCAPTCHA invisible
   */
   initRecaptcha(containerId: string): void {
-    this.recaptchaVerifier = new RecaptchaVerifier(containerId, {
-      size: 'invisible',
-    }, this.auth); // ← Aquí va `this.auth`, no containerId
-  } 
+    const container = document.getElementById(containerId);
+  
+    if (!container) {
+      console.error('No se encontró el contenedor para el reCAPTCHA');
+      return;
+    }
+  
+    this.recaptchaVerifier = new RecaptchaVerifier(
+      container,
+      { size: 'invisible' },
+      this.auth
+    );
+  }
+  
+  
+  
 
   /**
    * Enviar código SMS

@@ -27,7 +27,7 @@ export class ActividadesComponent implements OnInit {
 
   this.actividadesService.obtenerActividades()
     .pipe(
-      finalize(() => this.loadingService.hide()) //  esto asegura ocultar el loading siempre
+      finalize(() => this.loadingService.hide()) 
     )
     .subscribe({
       next: (data) => {

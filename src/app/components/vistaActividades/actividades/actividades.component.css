@@ -21,9 +21,9 @@
   padding: 16px 24px;
   max-width: 600px;
   text-align: center;
-  background-color: #f3e8dc; /* Fondo beige claro, tipo papel */
-  color: #473f38; /* Café oscuro (el mismo de tu botón) */
-  border-left: 6px solid #a67c52; /* Acento café tostado */
+  background-color: #f3e8dc;
+  color: #473f38;
+  border-left: 6px solid #a67c52;
   font-size: 18px;
   font-weight: 500;
   border-radius: 10px;
@@ -41,7 +41,7 @@
   font-size: 16px;
   border: none;
   border-radius: 30px;
-  background-color: #473f38; /* Café oscuro */
+  background-color: #473f38; 
   color: #fff;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;

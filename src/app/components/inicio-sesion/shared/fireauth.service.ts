@@ -47,12 +47,12 @@ export class FireauthService {
       return;
     }
   
-    this.recaptchaVerifier = new RecaptchaVerifier(
-      container,
-      { size: 'invisible' },
-      this.auth
-    );
+    this.recaptchaVerifier = new RecaptchaVerifier(this.auth, container, {
+      size: 'invisible',
+    });
   }
+  
+  
   
   
   

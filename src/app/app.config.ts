@@ -5,8 +5,6 @@ import { getAnalytics } from "firebase/analytics";
 import { provideFirebaseApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideAuth, getAuth } from '@angular/fire/auth';
-
-
 import { routes } from './app.routes';
 import { environment } from '../enviroments/environment';
 import { provideHttpClient } from '@angular/common/http';

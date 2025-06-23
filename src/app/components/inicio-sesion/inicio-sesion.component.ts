@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -14,6 +14,8 @@ import { AdminLoginResponse, AdminService } from './shared/admin.service';
 import { FireauthService } from './shared/fireauth.service';
 import { MatSelectModule } from '@angular/material/select';
 import { updateProfile } from 'firebase/auth';
+import { ConfirmationResult } from 'firebase/auth';
+
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -31,12 +33,17 @@ import { updateProfile } from 'firebase/auth';
   templateUrl: './inicio-sesion.component.html',
   styleUrl: './inicio-sesion.component.css'
 })
-export class InicioSesionComponent {
+export class InicioSesionComponent implements OnInit {
   // Campos de login
   username: string = '';
   password: string = '';
   nombre: string = '';
   hidePassword: boolean = true;
+
+  telefono: string = '';
+  codigoSMS: string = '';
+  confirmationResult!: ConfirmationResult;
+  socialAccount: string = 'google';
 
   userEmail: string = '';
   userPassword: string = '';
@@ -59,13 +66,13 @@ export class InicioSesionComponent {
     private fireAuth: FireauthService
   ) { }
 
-
+  ngOnInit(): void {
+    this.fireAuth.initRecaptcha('recaptcha-container');
+  }
 
   // Para login usuario
   authMethod: 'password' | 'sms' | 'social' = 'password';
   userUsername = '';
-  telefono = '';
-  socialAccount = '';
 
   // Cambiar vista desde registro a login usuario
   // Cambiar vista desde registro a login usuario
@@ -111,22 +118,46 @@ export class InicioSesionComponent {
     });
   }
 
-  // Login vía SMS
+  // ✅ LOGIN POR SMS
   onSmsLogin(): void {
-    Swal.fire({
-      title: 'Inicio SMS',
-      text: `Teléfono: ${this.telefono}`,
-      icon: 'info'
+    this.fireAuth.enviarCodigo(this.telefono).subscribe({
+      next: (result) => {
+        this.confirmationResult = result;
+        Swal.fire({
+          title: 'Código enviado',
+          text: 'Revisa tu SMS e ingresa el código.',
+          icon: 'info'
+        });
+      },
+      error: (err) => {
+        Swal.fire('Error', 'No se pudo enviar el código: ' + err.message, 'error');
+      }
     });
   }
 
-  // Login red social
-  onSocialLogin(): void {
-    Swal.fire({
-      title: 'Inicio con Red Social',
-      text: `Cuenta: ${this.socialAccount}`,
-      icon: 'info'
+  confirmarCodigo(): void {
+    this.fireAuth.confirmarCodigo(this.confirmationResult, this.codigoSMS).subscribe({
+      next: (cred) => {
+        Swal.fire('¡Listo!', 'Inicio de sesión exitoso con teléfono.', 'success');
+      },
+      error: (err) => {
+        Swal.fire('Error', 'Código incorrecto: ' + err.message, 'error');
+      }
     });
+  }
+
+  // ✅ LOGIN CON GOOGLE
+  onSocialLogin(): void {
+    if (this.socialAccount === 'google') {
+      this.fireAuth.loginConGoogle().subscribe({
+        next: (cred) => {
+          Swal.fire('¡Bienvenido!', 'Inicio de sesión exitoso con Google.', 'success');
+        },
+        error: (err) => {
+          Swal.fire('Error', 'Fallo con Google: ' + err.message, 'error');
+        }
+      });
+    }
   }
 
 

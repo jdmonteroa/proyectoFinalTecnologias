@@ -173,37 +173,32 @@
             </form>
             }
 
-
-            <!-- SMS -->
-            @if (authMethod === 'sms') {
+            <!-- SMS-->
             <form (ngSubmit)="onSmsLogin()">
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Teléfono</mat-label>
-                    <input matInput [(ngModel)]="telefono" name="telefono" required>
-                    <mat-icon matPrefix>phone</mat-icon>
+                <mat-form-field appearance="outline">
+                  <mat-label>Teléfono</mat-label>
+                  <input matInput [(ngModel)]="telefono" name="telefono" required>
                 </mat-form-field>
+                <div id="recaptcha-container"></div>
+                <button mat-raised-button type="submit">Enviar código</button>
+              </form>
+              
+              <!-- Form para el código -->
+              <mat-form-field appearance="outline">
+                <mat-label>Código de verificación</mat-label>
+                <input matInput [(ngModel)]="codigoSMS" name="codigoSMS" required>
+              </mat-form-field>
+              <button mat-raised-button (click)="confirmarCodigo()">Confirmar código</button>
+              
+              <!-- solo google-->
+              @if (authMethod === 'social') {
                 <div class="button-container">
-                    <button mat-raised-button type="submit" class="auth-btn">Enviar código</button>
+                  <button mat-raised-button class="auth-btn" (click)="onSocialLogin()">
+                    Iniciar con Google
+                  </button>
                 </div>
-            </form>
-            }
-
-            <!-- Solo Gmail -->
-            @if (authMethod === 'social') {
-            <form (ngSubmit)="onSocialLogin()">
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Red Social</mat-label>
-                    <mat-select [(ngModel)]="socialAccount" name="socialAccount" required>
-                        <mat-option value="google">Google</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <div class="button-container">
-                    <button mat-raised-button type="submit" class="auth-btn">
-                        Iniciar con {{ socialAccount || 'Google' }}
-                    </button>
-                </div>
-            </form>
-            }
+              }
+              
 
             <div class="button-container center-text">
                 <button type="button" class="login-method-btn" (click)="activeTab = 'register'">

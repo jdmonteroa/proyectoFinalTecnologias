@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, UserCredential } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Auth } from '@angular/fire/auth';
 import { Observable, from } from 'rxjs';
+import { signInWithPhoneNumber, RecaptchaVerifier, ConfirmationResult } from 'firebase/auth';
+
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +12,7 @@ import { Observable, from } from 'rxjs';
 export class FireauthService {
 
   constructor(private auth: Auth) {}
+  recaptchaVerifier!: RecaptchaVerifier;
 
   /**
    * Login con correo y contraseña
@@ -23,6 +27,43 @@ export class FireauthService {
   registrarUsuario(email: string, password: string): Observable<UserCredential> {
     return from(createUserWithEmailAndPassword(this.auth, email, password));
   }
+
+  /**
+   * Login con Google
+   */
+  loginConGoogle(): Observable<UserCredential> {
+    const provider = new GoogleAuthProvider();
+    return from(signInWithPopup(this.auth, provider));
+  }
+
+  /**
+   * Inicializar reCAPTCHA invisible
+  */
+  initRecaptcha(containerId: string): void {
+    this.recaptchaVerifier = new RecaptchaVerifier(
+      this.auth,              // Auth instance primero
+      containerId,            // ID del contenedor del captcha
+      {
+        size: 'invisible'     // Configuración
+      }
+    );
+  }
+  
+
+  /**
+   * Enviar código SMS
+  */
+  enviarCodigo(telefono: string): Observable<ConfirmationResult> {
+    return from(signInWithPhoneNumber(this.auth, telefono, this.recaptchaVerifier));
+  }
+
+  /**
+   * Confirmar código SMS
+  */
+  confirmarCodigo(result: ConfirmationResult, codigo: string): Observable<UserCredential> {
+    return from(result.confirm(codigo));
+  }
+
 
   /**
    * Cerrar sesión

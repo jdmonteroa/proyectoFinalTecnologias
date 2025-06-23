@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'; 
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -46,4 +46,3 @@ export class FireauthService {
     return from(signOut(this.auth));
   }
 }
-

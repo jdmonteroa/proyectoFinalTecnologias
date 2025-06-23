@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -7,15 +7,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import Swal from 'sweetalert2';
 import { AuthService } from './shared/auth.service';
 import { AdminLoginResponse, AdminService } from './shared/admin.service';
 import { FireauthService } from './shared/fireauth.service';
-import { MatSelectModule } from '@angular/material/select';
-import { updateProfile } from 'firebase/auth';
+import { ConfirmationResult, updateProfile } from 'firebase/auth';
 
 @Component({
   selector: 'app-inicio-sesion',
+  standalone: true,
   imports: [
     RouterModule,
     FormsModule,
@@ -29,8 +30,8 @@ import { updateProfile } from 'firebase/auth';
   templateUrl: './inicio-sesion.component.html',
   styleUrl: './inicio-sesion.component.css'
 })
-export class InicioSesionComponent {
-  // Campos de login
+export class InicioSesionComponent{
+  // Login campos
   username: string = '';
   password: string = '';
   nombre: string = '';
@@ -39,19 +40,26 @@ export class InicioSesionComponent {
   isAccountLocked: boolean = false;
   maxAttempts: number = 3;
 
+  telefono: string = '';
+  codigo: string = '';
+  confirmationResult!: ConfirmationResult;
+
+  @ViewChild('recaptchaDiv', { static: false }) recaptchaDiv!: ElementRef;
+
   userEmail: string = '';
   userPassword: string = '';
 
-  // Control de pestañas
   activeTab: 'login' | 'register' | 'userLogin' = 'login';
 
-  // Campos de registro
   regUsername = '';
   regEmail = '';
   regPassword = '';
   regConfirmPassword: string = '';
   regPhone: string = '';
   regSocial: string = '';
+
+  authMethod: 'password' | 'sms' | 'social' = 'password';
+  userUsername = '';
 
   constructor(
     private adminService: AdminService,
@@ -60,101 +68,55 @@ export class InicioSesionComponent {
     private fireAuth: FireauthService
   ) { }
 
-
-
-  // Para login usuario
-  authMethod: 'password' | 'sms' | 'social' = 'password';
-  userUsername = '';
-  telefono = '';
-  socialAccount = '';
-
-  // Cambiar vista desde registro a login usuario
-  // Cambiar vista desde registro a login usuario
   showUserLogin(method: 'password' | 'sms' | 'social' = 'password') {
     this.activeTab = 'userLogin';
     this.authMethod = method;
   }
-  // Login usuario por contraseña
+
   onUserLogin(): void {
     const emailTrimmed = this.userEmail.trim();
     const passwordTrimmed = this.userPassword.trim();
 
     if (!emailTrimmed || !passwordTrimmed) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Campos requeridos',
-        text: 'Debes ingresar el correo y la contraseña.'
-      });
+      Swal.fire({ icon: 'warning', title: 'Campos requeridos', text: 'Debes ingresar el correo y la contraseña.' });
       return;
     }
 
     this.fireAuth.loginUsuario(emailTrimmed, passwordTrimmed).subscribe({
       next: (cred) => {
         const nombreUsuario = cred.user.displayName || 'Usuario';
-
-        Swal.fire({
-          icon: 'success',
-          title: `¡Bienvenido, ${nombreUsuario}!`,
-          text: 'Has iniciado sesión exitosamente.'
-        });
-
-        //login usuario normal
+        Swal.fire({ icon: 'success', title: `¡Bienvenido, ${nombreUsuario}!`, text: 'Has iniciado sesión exitosamente.' });
         this.authService.login(nombreUsuario, 'user');
         this.dialogRef.close(true);
       },
       error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al iniciar sesión',
-          text: 'Correo o contraseña incorrectos.'
-        });
+        Swal.fire({ icon: 'error', title: 'Error al iniciar sesión', text: 'Correo o contraseña incorrectos.' });
       }
     });
   }
 
-  // Login vía SMS
-  onSmsLogin(): void {
-    Swal.fire({
-      title: 'Inicio SMS',
-      text: `Teléfono: ${this.telefono}`,
-      icon: 'info'
+  onGoogleLogin() {
+    this.fireAuth.loginConGoogle().subscribe({
+      next: (cred) => {
+        const user = cred.user;
+        const nombreUsuario = user.displayName || 'Usuario';
+
+        this.authService.login(nombreUsuario, 'user');
+
+        Swal.fire({
+          icon: 'success',
+          title: `¡Bienvenido, ${nombreUsuario}!`,
+          text: 'Has iniciado sesión exitosamente con Google.'
+        });
+
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        console.error('Error al iniciar sesión con Google:', err);
+        Swal.fire({ icon: 'error', title: 'Error al iniciar sesión', text: 'Hubo un problema con Google. Inténtalo de nuevo.' });
+      }
     });
   }
-
-  // Login red social
-  onGoogleLogin() {
-  this.fireAuth.loginConGoogle().subscribe({
-    next: (cred) => {
-      const user = cred.user;
-      const nombreUsuario = user.displayName || 'Usuario';
-
-      // Inicia sesión como usuario normal
-      this.authService.login(nombreUsuario, 'user');
-
-      // Alerta de bienvenida
-      Swal.fire({
-        icon: 'success',
-        title: `¡Bienvenido, ${nombreUsuario}!`,
-        text: 'Has iniciado sesión exitosamente con Google.'
-      });
-
-      // Cierra el modal
-      this.dialogRef.close(true);
-    },
-    error: (err) => {
-      console.error('Error al iniciar sesión con Google:', err);
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Error al iniciar sesión',
-        text: 'Hubo un problema con Google. Inténtalo de nuevo.'
-      });
-    }
-  });
-}
-
-
-
 
   closeDialog(): void {
     this.dialogRef.close();
@@ -176,20 +138,12 @@ export class InicioSesionComponent {
     }
 
     if (!passwordRegex.test(passwordTrimmed) || !hasUpperCase || !hasDigit) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Contraseña inválida',
-        html: 'Debe tener entre 8 y 20 caracteres, una mayúscula y un número.'
-      });
+      Swal.fire({ icon: 'warning', title: 'Contraseña inválida', html: 'Debe tener entre 8 y 20 caracteres, una mayúscula y un número.' });
       return;
     }
 
     if (passwordTrimmed !== confirmPasswordTrimmed) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Contraseñas no coinciden',
-        text: 'Asegúrate de que ambas contraseñas sean iguales.'
-      });
+      Swal.fire({ icon: 'error', title: 'Contraseñas no coinciden', text: 'Asegúrate de que ambas contraseñas sean iguales.' });
       return;
     }
 
@@ -198,26 +152,14 @@ export class InicioSesionComponent {
         updateProfile(cred.user, {
           displayName: usernameTrimmed
         }).then(() => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Registro exitoso',
-            text: 'Tu cuenta ha sido creada correctamente.'
-          });
+          Swal.fire({ icon: 'success', title: 'Registro exitoso', text: 'Tu cuenta ha sido creada correctamente.' });
           this.dialogRef.close(true);
         }).catch(() => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error al guardar nombre',
-            text: 'El usuario fue registrado, pero el nombre no se guardó correctamente.'
-          });
+          Swal.fire({ icon: 'error', title: 'Error al guardar nombre', text: 'El usuario fue registrado, pero el nombre no se guardó correctamente.' });
         });
       },
       error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error al registrar',
-          text: 'Ocurrió un problema al crear tu cuenta. Intenta más tarde.'
-        });
+        Swal.fire({ icon: 'error', title: 'Error al registrar', text: 'Ocurrió un problema al crear tu cuenta. Intenta más tarde.' });
       }
     });
   }
@@ -262,7 +204,6 @@ export class InicioSesionComponent {
         if (err.error?.bloqueado) {
           this.isAccountLocked = true;
           this.loginAttempts = this.maxAttempts;
-
           Swal.fire({
             icon: 'error',
             title: 'Cuenta bloqueada',
@@ -273,15 +214,10 @@ export class InicioSesionComponent {
             confirmButtonColor: '#A9745D',
             confirmButtonText: 'Entendido'
           });
-
         } else if (err.status === 401) {
           this.loginAttempts = err.error?.intentosFallidos || this.loginAttempts + 1;
           const intentosRestantes = this.maxAttempts - this.loginAttempts;
-
-          if (intentosRestantes <= 0) {
-            this.isAccountLocked = true;
-          }
-
+          if (intentosRestantes <= 0) this.isAccountLocked = true;
           Swal.fire({
             icon: 'warning',
             title: 'Credenciales incorrectas',
@@ -307,6 +243,7 @@ export class InicioSesionComponent {
       }
     });
   }
+
   public showUnlockAccountDialog(): void {
     this.adminService.getUserEmail(this.username.trim()).subscribe({
       next: (email: any) => {

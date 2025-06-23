@@ -187,20 +187,41 @@
             </form>
             }
 
-
+            <!-- SMS -->
             <!-- SMS -->
             @if (authMethod === 'sms') {
-            <form (ngSubmit)="onSmsLogin()">
+            <!-- Contenedor invisible del reCAPTCHA -->
+            <div id="recaptcha-container"></div>
+
+            <!-- Formulario para enviar código -->
+            <form  #smsForm="ngForm">
                 <mat-form-field appearance="outline" class="form-group">
                     <mat-label>Teléfono</mat-label>
                     <input matInput [(ngModel)]="telefono" name="telefono" required>
                     <mat-icon matPrefix>phone</mat-icon>
                 </mat-form-field>
                 <div class="button-container">
-                    <button mat-raised-button type="submit" class="auth-btn">Enviar código</button>
+                    <button mat-raised-button type="submit" class="auth-btn" [disabled]="!smsForm.form.valid">
+                        Enviar código
+                    </button>
+                </div>
+            </form>
+
+            <!-- Formulario para ingresar código recibido -->
+            <form #codeForm="ngForm">
+                <mat-form-field appearance="outline" class="form-group">
+                    <mat-label>Código de verificación</mat-label>
+                    <input matInput [(ngModel)]="codigo" name="codigo" required>
+                    <mat-icon matPrefix>vpn_key</mat-icon>
+                </mat-form-field>
+                <div class="button-container">
+                    <button mat-raised-button type="submit" class="auth-btn" [disabled]="!codeForm.form.valid">
+                        Verificar código
+                    </button>
                 </div>
             </form>
             }
+
 
             <!-- Solo Gmail -->
             @if (authMethod === 'social') {
@@ -208,8 +229,8 @@
                 <br>
                 <button mat-raised-button color="accent" (click)="onGoogleLogin()" class="auth-btn google-btn">
                     <div class="googleimage">
-                    <img src="/google.png" alt="Google" class="google-icon" />
-                    Iniciar sesión con Google
+                        <img src="/google.png" alt="Google" class="google-icon" />
+                        Iniciar sesión con Google
                     </div>
                 </button>
 

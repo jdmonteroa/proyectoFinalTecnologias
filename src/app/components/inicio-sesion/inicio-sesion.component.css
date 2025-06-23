@@ -400,3 +400,15 @@
     caret-color: #5B4C3A !important;
 }
 
+/* Estilos para reCAPTCHA */
+.g-recaptcha {
+  transform: scale(1.05); /* Ajusta el tamaño del captcha */
+  transform-origin: center;
+  margin: 12px auto 8px auto;
+  width: fit-content;
+  border: 1px solid #B9A88F;
+  border-radius: 8px;
+  padding: 8px;
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo suave */
+  box-shadow: 0 4px 10px rgba(91, 76, 58, 0.15);
+}

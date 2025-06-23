@@ -174,21 +174,27 @@
             }
 
             <!-- SMS-->
-            <form (ngSubmit)="onSmsLogin()">
-                <mat-form-field appearance="outline">
-                  <mat-label>Teléfono</mat-label>
-                  <input matInput [(ngModel)]="telefono" name="telefono" required>
-                </mat-form-field>
-                <div id="recaptcha-container"></div>
-                <button mat-raised-button type="submit">Enviar código</button>
-              </form>
+            <div *ngIf="authMethod === 'sms'">
+                <form (ngSubmit)="onSmsLogin()">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput [(ngModel)]="telefono" name="telefono" required>
+                  </mat-form-field>
+              
+                  <div id="recaptcha-container"></div> <!-- IMPORTANTE -->
+              
+                  <button mat-raised-button type="submit">Enviar código</button>
+                </form>
               
               <!-- Form para el código -->
-              <mat-form-field appearance="outline">
-                <mat-label>Código de verificación</mat-label>
-                <input matInput [(ngModel)]="codigoSMS" name="codigoSMS" required>
-              </mat-form-field>
-              <button mat-raised-button (click)="confirmarCodigo()">Confirmar código</button>
+              <form>
+                <mat-form-field appearance="outline">
+                  <mat-label>Código de verificación</mat-label>
+                  <input matInput [(ngModel)]="codigoSMS" name="codigoSMS" required>
+                </mat-form-field>
+                <button mat-raised-button (click)="confirmarCodigo()">Confirmar código</button>
+              </form>
+            </div>
               
               <!-- solo google-->
               @if (authMethod === 'social') {

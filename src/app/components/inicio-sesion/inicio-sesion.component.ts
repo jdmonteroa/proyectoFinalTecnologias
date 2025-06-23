@@ -68,7 +68,9 @@ export class InicioSesionComponent implements OnInit {
     private fireAuth: FireauthService
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.fireAuth.initRecaptcha('recaptcha-container');
+  }
 
   // Para login usuario
   authMethod: 'password' | 'sms' | 'social' = 'password';
@@ -120,16 +122,10 @@ export class InicioSesionComponent implements OnInit {
 
   // ✅ LOGIN POR SMS
   onSmsLogin(): void {
-    this.fireAuth.initRecaptcha('recaptcha-container');
-
     this.fireAuth.enviarCodigo(this.telefono).subscribe({
       next: (result) => {
         this.confirmationResult = result;
-        Swal.fire({
-          title: 'Código enviado',
-          text: 'Revisa tu SMS e ingresa el código.',
-          icon: 'info'
-        });
+        Swal.fire('Código enviado', 'Revisa tu SMS e ingresa el código.', 'info');
       },
       error: (err) => {
         Swal.fire('Error', 'No se pudo enviar el código: ' + err.message, 'error');
@@ -139,7 +135,7 @@ export class InicioSesionComponent implements OnInit {
 
   confirmarCodigo(): void {
     this.fireAuth.confirmarCodigo(this.confirmationResult, this.codigoSMS).subscribe({
-      next: () => {
+      next: (cred) => {
         Swal.fire('¡Listo!', 'Inicio de sesión exitoso con teléfono.', 'success');
       },
       error: (err) => {
@@ -147,7 +143,6 @@ export class InicioSesionComponent implements OnInit {
       }
     });
   }
-
 
   // ✅ LOGIN CON GOOGLE
   onSocialLogin(): void {

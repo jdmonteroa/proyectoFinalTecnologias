@@ -40,15 +40,10 @@ export class FireauthService {
    * Inicializar reCAPTCHA invisible
   */
   initRecaptcha(containerId: string): void {
-    this.recaptchaVerifier = new RecaptchaVerifier(
-      this.auth,              // Auth instance primero
-      containerId,            // ID del contenedor del captcha
-      {
-        size: 'invisible'     // Configuración
-      }
-    );
-  }
-  
+    this.recaptchaVerifier = new RecaptchaVerifier(containerId, {
+      size: 'invisible',
+    }, this.auth); // ← Aquí va `this.auth`, no containerId
+  } 
 
   /**
    * Enviar código SMS

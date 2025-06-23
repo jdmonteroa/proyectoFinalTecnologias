@@ -18,7 +18,7 @@ export interface Reserva {
 })
 export class ReservasService {
 
-  private apiUrl = 'http://localhost:3000/api/reservas'; // url del api
+  private apiUrl = 'https://proyectofinalnodejs.onrender.com/api/reservas'; // url del api
 
   constructor(private http: HttpClient) { }
 

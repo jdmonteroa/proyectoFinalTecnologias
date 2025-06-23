@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class CorreoService {
-  private apiUrl = 'http://localhost:3000/api/enviar-correo';
+  private apiUrl = 'https://proyectofinalnodejs.onrender.com/api/enviar-correo';
 
   constructor(private http: HttpClient) {}
 

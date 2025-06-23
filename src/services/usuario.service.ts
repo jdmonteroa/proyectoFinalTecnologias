@@ -13,7 +13,7 @@ export interface Usuario {
   providedIn: 'root'
 })
 export class UsuarioService {
-  private apiUrl = 'http://localhost:3000/usuarios';
+  private apiUrl = 'https://proyectofinalnodejs.onrender.com/usuarios';
 
   constructor(private http: HttpClient) { }
 

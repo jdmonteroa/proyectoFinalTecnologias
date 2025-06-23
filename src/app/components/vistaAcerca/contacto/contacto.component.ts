@@ -52,7 +52,7 @@ export class ContactoComponent {
         next: (res) => {
           const idRecienCreado = res.id;
 
-          this.http.get<Contacto>(`http://localhost:3000/api/qr/${idRecienCreado}`).subscribe({
+          this.http.get<Contacto>(`https://proyectofinalnodejs.onrender.com/api/qr/${idRecienCreado}`).subscribe({
             next: (contacto) => {
               this.ultimoContacto = contacto;
               this.qrDisponible = true;

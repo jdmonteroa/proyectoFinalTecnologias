@@ -14,7 +14,7 @@ export interface Contacto {
   providedIn: 'root'
 })
 export class ContactoService {
-  private apiUrl = 'http://localhost:3000/api/contactos';
+  private apiUrl = 'https://proyectofinalnodejs.onrender.com/api/contactos';
 
   constructor(private http: HttpClient) {}
 

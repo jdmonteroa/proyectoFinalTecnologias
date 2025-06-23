@@ -18,7 +18,7 @@ export interface AdminLoginResponse {
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'http://localhost:3000/api'; // Ajusta según tu configuración
+  private apiUrl = 'https://proyectofinalnodejs.onrender.com/api'; // Ajusta según tu configuración
 
   constructor(private http: HttpClient) { }
 

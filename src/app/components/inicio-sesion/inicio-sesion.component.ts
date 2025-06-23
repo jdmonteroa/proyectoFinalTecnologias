@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -13,6 +13,9 @@ import { AdminLoginResponse, AdminService } from './shared/admin.service';
 import { FireauthService } from './shared/fireauth.service';
 import { MatSelectModule } from '@angular/material/select';
 import { updateProfile } from 'firebase/auth';
+
+// Declaración para reCAPTCHA
+declare var grecaptcha: any;
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -29,7 +32,7 @@ import { updateProfile } from 'firebase/auth';
   templateUrl: './inicio-sesion.component.html',
   styleUrl: './inicio-sesion.component.css'
 })
-export class InicioSesionComponent {
+export class InicioSesionComponent implements OnInit {
   // Campos de login
   username: string = '';
   password: string = '';
@@ -53,6 +56,11 @@ export class InicioSesionComponent {
   regPhone: string = '';
   regSocial: string = '';
 
+  
+   // Para reCAPTCHA
+  captchaToken: string | null = null;
+  captchaWidgetId: any = null;
+
   constructor(
     private adminService: AdminService,
     private dialogRef: MatDialogRef<InicioSesionComponent>,
@@ -74,7 +82,70 @@ export class InicioSesionComponent {
     this.activeTab = 'userLogin';
     this.authMethod = method;
   }
+  ngOnInit() {
+    this.loadRecaptchaScript();
+  }
+
+  // Carga el script de reCAPTCHA
+  private loadRecaptchaScript() {
+    if (document.getElementById('recaptcha-script')) {
+      this.initializeRecaptcha();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = 'recaptcha-script';
+    script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => this.initializeRecaptcha();
+    document.head.appendChild(script);
+  }
+
+  // Inicializa reCAPTCHA después de cargar el script
+  private initializeRecaptcha() {
+    grecaptcha.ready(() => {
+      console.log('reCAPTCHA está listo');
+    });
+  }
+
+  // Renderiza el widget de reCAPTCHA
+  renderCaptcha(elementId: string = 'g-recaptcha'): void {
+    grecaptcha.ready(() => {
+      this.captchaWidgetId = grecaptcha.render(elementId, {
+        sitekey: '6LdEO2srAAAAAEeP8pYpCvqgIr9QtvTqQs3XCFlp',
+        callback: (token: string) => this.onCaptchaSuccess(token),
+        'expired-callback': () => this.onCaptchaExpired(),
+        'error-callback': () => this.onCaptchaError()
+      });
+    });
+  }
+
+  onCaptchaSuccess(token: string) {
+    this.captchaToken = token;
+    console.log('reCAPTCHA token:', token);
+  }
+
+  onCaptchaExpired() {
+    this.captchaToken = null;
+    console.log('reCAPTCHA expirado');
+  }
+
+  onCaptchaError() {
+    this.captchaToken = null;
+    console.error('Error en reCAPTCHA');
+  }
+
+  // Resetear reCAPTCHA
+  resetCaptcha() {
+    this.captchaToken = null;
+    if (this.captchaWidgetId && grecaptcha.reset) {
+      grecaptcha.reset(this.captchaWidgetId);
+    }
+  }
+
   // Login usuario por contraseña
+  // Login usuario por contraseña (modificado para incluir reCAPTCHA)
   onUserLogin(): void {
     const emailTrimmed = this.userEmail.trim();
     const passwordTrimmed = this.userPassword.trim();
@@ -84,6 +155,15 @@ export class InicioSesionComponent {
         icon: 'warning',
         title: 'Campos requeridos',
         text: 'Debes ingresar el correo y la contraseña.'
+      });
+      return;
+    }
+
+    if (!this.captchaToken) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Verificación requerida',
+        text: 'Por favor completa el reCAPTCHA para continuar.'
       });
       return;
     }
@@ -98,7 +178,6 @@ export class InicioSesionComponent {
           text: 'Has iniciado sesión exitosamente.'
         });
 
-        //login usuario normal
         this.authService.login(nombreUsuario, 'user');
         this.dialogRef.close(true);
       },
@@ -108,10 +187,11 @@ export class InicioSesionComponent {
           title: 'Error al iniciar sesión',
           text: 'Correo o contraseña incorrectos.'
         });
+        this.resetCaptcha();
       }
     });
   }
-
+  
   // Login vía SMS
   onSmsLogin(): void {
     Swal.fire({

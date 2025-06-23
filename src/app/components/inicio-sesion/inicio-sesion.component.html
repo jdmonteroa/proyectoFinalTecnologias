@@ -49,7 +49,7 @@
                     <mat-error>La contraseña es obligatoria</mat-error>
                     }
                 </mat-form-field>
-                
+
                 <div class="login-status">
                     @if (loginAttempts > 0) {
                     <p class="attempts-warning" [class.last-attempt]="loginAttempts >= maxAttempts - 1">
@@ -59,11 +59,8 @@
                     @if (isAccountLocked) {
                     <div class="unlock-account-container">
                         <p class="locked-message">Tu cuenta ha sido bloqueada</p>
-                        <button mat-raised-button 
-                                color="warn" 
-                                class="unlock-btn"
-                                (click)="showUnlockAccountDialog()">
-                        Desbloquear cuenta
+                        <button mat-raised-button color="warn" class="unlock-btn" (click)="showUnlockAccountDialog()">
+                            Desbloquear cuenta
                         </button>
                     </div>
                     }
@@ -71,7 +68,7 @@
             </div>
             <div class="button-container">
                 <button mat-raised-button type="submit" class="auth-btn" color="primary"
-                [disabled]="!loginForm.form.valid || isAccountLocked">
+                    [disabled]="!loginForm.form.valid || isAccountLocked">
                     Ingresar
                 </button>
             </div>
@@ -207,25 +204,26 @@
 
             <!-- Solo Gmail -->
             @if (authMethod === 'social') {
-            <form (ngSubmit)="onSocialLogin()">
-                <mat-form-field appearance="outline" class="form-group">
-                    <mat-label>Red Social</mat-label>
-                    <mat-select [(ngModel)]="socialAccount" name="socialAccount" required>
-                        <mat-option value="google">Google</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <div class="button-container">
-                    <button mat-raised-button type="submit" class="auth-btn">
-                        Iniciar con {{ socialAccount || 'Google' }}
-                    </button>
-                </div>
-            </form>
+            <div class="button-container center-text">
+                <br>
+                <button mat-raised-button color="accent" (click)="onGoogleLogin()" class="auth-btn google-btn">
+                    <div class="googleimage">
+                    <img src="/google.png" alt="Google" class="google-icon" />
+                    Iniciar sesión con Google
+                    </div>
+                </button>
+
+            </div>
             }
 
             <div class="button-container center-text">
                 <button type="button" class="login-method-btn" (click)="activeTab = 'register'">
                     ¿No tienes cuenta? Regístrate aquí
                 </button>
+                <br>
+                <br>
+                <br>
+                <br>
             </div>
         </div>
         }

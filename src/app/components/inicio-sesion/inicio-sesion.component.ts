@@ -30,7 +30,7 @@ import { updateProfile } from 'firebase/auth';
   styleUrl: './inicio-sesion.component.css'
 })
 export class InicioSesionComponent {
-   // Campos de login
+  // Campos de login
   username: string = '';
   password: string = '';
   nombre: string = '';
@@ -97,9 +97,9 @@ export class InicioSesionComponent {
           title: `¡Bienvenido, ${nombreUsuario}!`,
           text: 'Has iniciado sesión exitosamente.'
         });
-        
+
         //login usuario normal
-        this.authService.login(nombreUsuario, 'user'); 
+        this.authService.login(nombreUsuario, 'user');
         this.dialogRef.close(true);
       },
       error: () => {
@@ -122,13 +122,38 @@ export class InicioSesionComponent {
   }
 
   // Login red social
-  onSocialLogin(): void {
-    Swal.fire({
-      title: 'Inicio con Red Social',
-      text: `Cuenta: ${this.socialAccount}`,
-      icon: 'info'
-    });
-  }
+  onGoogleLogin() {
+  this.fireAuth.loginConGoogle().subscribe({
+    next: (cred) => {
+      const user = cred.user;
+      const nombreUsuario = user.displayName || 'Usuario';
+
+      // Inicia sesión como usuario normal
+      this.authService.login(nombreUsuario, 'user');
+
+      // Alerta de bienvenida
+      Swal.fire({
+        icon: 'success',
+        title: `¡Bienvenido, ${nombreUsuario}!`,
+        text: 'Has iniciado sesión exitosamente con Google.'
+      });
+
+      // Cierra el modal
+      this.dialogRef.close(true);
+    },
+    error: (err) => {
+      console.error('Error al iniciar sesión con Google:', err);
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al iniciar sesión',
+        text: 'Hubo un problema con Google. Inténtalo de nuevo.'
+      });
+    }
+  });
+}
+
+
 
 
   closeDialog(): void {
@@ -198,90 +223,90 @@ export class InicioSesionComponent {
   }
 
   onSubmit(): void {
-      if (!this.nombre.trim() || !this.username.trim() || !this.password.trim()) {
+    if (!this.nombre.trim() || !this.username.trim() || !this.password.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Debes llenar todos los campos para continuar.',
+        background: '#fffaf3',
+        color: '#5B4C3A',
+        iconColor: '#FFA500',
+        confirmButtonColor: '#A9745D',
+        confirmButtonText: 'Ok'
+      });
+      return;
+    }
+
+    const payload = {
+      nombre: this.nombre.trim(),
+      usuario: this.username.trim(),
+      password: this.password.trim()
+    };
+
+    this.adminService.login(payload).subscribe({
+      next: (res: AdminLoginResponse) => {
+        this.authService.login(res.nombre, 'admin');
         Swal.fire({
-          icon: 'warning',
-          title: 'Campos incompletos',
-          text: 'Debes llenar todos los campos para continuar.',
+          title: '¡Inicio de sesión exitoso!',
+          text: `Bienvenido ${res.nombre}`,
+          icon: 'success',
           background: '#fffaf3',
           color: '#5B4C3A',
-          iconColor: '#FFA500',
+          iconColor: '#5B4C3A',
           confirmButtonColor: '#A9745D',
-          confirmButtonText: 'Ok'
+          confirmButtonText: 'Continuar'
         });
-        return;
-      }
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        if (err.error?.bloqueado) {
+          this.isAccountLocked = true;
+          this.loginAttempts = this.maxAttempts;
 
-      const payload = {
-        nombre: this.nombre.trim(),
-        usuario: this.username.trim(),
-        password: this.password.trim()
-      };
-
-      this.adminService.login(payload).subscribe({
-        next: (res: AdminLoginResponse) => {
-          this.authService.login(res.nombre, 'admin');
           Swal.fire({
-            title: '¡Inicio de sesión exitoso!',
-            text: `Bienvenido ${res.nombre}`,
-            icon: 'success',
+            icon: 'error',
+            title: 'Cuenta bloqueada',
+            text: 'Tu cuenta ha sido bloqueada por intentos fallidos. Revisa tu correo para recuperarla.',
             background: '#fffaf3',
             color: '#5B4C3A',
-            iconColor: '#5B4C3A',
+            iconColor: '#B23B3B',
             confirmButtonColor: '#A9745D',
-            confirmButtonText: 'Continuar'
+            confirmButtonText: 'Entendido'
           });
-          this.dialogRef.close(true);
-        },
-        error: (err) => {
-          if (err.error?.bloqueado) {
+
+        } else if (err.status === 401) {
+          this.loginAttempts = err.error?.intentosFallidos || this.loginAttempts + 1;
+          const intentosRestantes = this.maxAttempts - this.loginAttempts;
+
+          if (intentosRestantes <= 0) {
             this.isAccountLocked = true;
-            this.loginAttempts = this.maxAttempts;
-
-            Swal.fire({
-              icon: 'error',
-              title: 'Cuenta bloqueada',
-              text: 'Tu cuenta ha sido bloqueada por intentos fallidos. Revisa tu correo para recuperarla.',
-              background: '#fffaf3',
-              color: '#5B4C3A',
-              iconColor: '#B23B3B',
-              confirmButtonColor: '#A9745D',
-              confirmButtonText: 'Entendido'
-            });
-
-          } else if (err.status === 401) {
-            this.loginAttempts = err.error?.intentosFallidos || this.loginAttempts + 1;
-            const intentosRestantes = this.maxAttempts - this.loginAttempts;
-
-            if (intentosRestantes <= 0) {
-              this.isAccountLocked = true;
-            }
-
-            Swal.fire({
-              icon: 'warning',
-              title: 'Credenciales incorrectas',
-              text: `Intentos restantes: ${intentosRestantes}`,
-              background: '#fffaf3',
-              color: '#5B4C3A',
-              iconColor: '#FFA500',
-              confirmButtonColor: '#A9745D',
-              confirmButtonText: 'Intentar nuevamente'
-            });
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error desconocido',
-              text: 'Ocurrió un error inesperado. Intenta más tarde.',
-              background: '#fffaf3',
-              color: '#5B4C3A',
-              iconColor: '#B23B3B',
-              confirmButtonColor: '#A9745D',
-              confirmButtonText: 'Entendido'
-            });
           }
+
+          Swal.fire({
+            icon: 'warning',
+            title: 'Credenciales incorrectas',
+            text: `Intentos restantes: ${intentosRestantes}`,
+            background: '#fffaf3',
+            color: '#5B4C3A',
+            iconColor: '#FFA500',
+            confirmButtonColor: '#A9745D',
+            confirmButtonText: 'Intentar nuevamente'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error desconocido',
+            text: 'Ocurrió un error inesperado. Intenta más tarde.',
+            background: '#fffaf3',
+            color: '#5B4C3A',
+            iconColor: '#B23B3B',
+            confirmButtonColor: '#A9745D',
+            confirmButtonText: 'Entendido'
+          });
         }
-      });
-    }
+      }
+    });
+  }
   public showUnlockAccountDialog(): void {
     this.adminService.getUserEmail(this.username.trim()).subscribe({
       next: (email: any) => {
@@ -305,17 +330,17 @@ export class InicioSesionComponent {
           preConfirm: () => {
             const newPassword = (document.getElementById('new-password') as HTMLInputElement).value;
             const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement).value;
-            
+
             if (!newPassword || !confirmPassword) {
               Swal.showValidationMessage('Ambos campos son requeridos');
               return false;
             }
-            
+
             if (newPassword !== confirmPassword) {
               Swal.showValidationMessage('Las contraseñas no coinciden');
               return false;
             }
-            
+
             return { newPassword };
           }
         }).then((result) => {

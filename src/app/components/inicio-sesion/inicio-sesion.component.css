@@ -2,15 +2,25 @@
 
 .login-container {
     width: 100%;
-    min-height: 700px;
+    max-width: 540px;
+    min-height: auto;
     background-color: rgba(222, 209, 186, 0.95);
-    padding: 24px;
+    padding: 16px;
     border-radius: 12px;
     border: 1px solid #B9A88F;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    margin: 0 auto;
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #5B4C3A;
 }
 
 .tab-header {
@@ -25,8 +35,8 @@
     background: none;
     border: none;
     font-weight: bold;
-    font-size: 16px;
-    padding: 8px;
+    font-size: 15px;
+    padding: 6px 0;
     cursor: pointer;
     color: #5B4C3A;
     font-family: 'Playfair Display', serif;
@@ -50,32 +60,31 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    gap: 12px; /* mantiene separación razonable */
+    gap: 8px;
 }
 
 .form-fields {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 12px; /* espacio compacto entre campos */
-    margin-bottom: 0; /* elimina margen extra debajo */
-    padding-bottom: 0; /* elimina padding inferior */
+    gap: 8px;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
-/* Último campo no deja margen inferior */
 .login-form .form-fields .form-group:last-child {
     margin-bottom: 0;
 }
 
 .form-header {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     text-align: center;
 }
 
 .form-header h2 {
     color: #5B4C3A;
-    font-size: 24px;
-    margin-bottom: 8px;
+    font-size: 22px;
+    margin-bottom: 4px;
     font-weight: 700;
     font-family: 'Playfair Display', serif;
     letter-spacing: 0.5px;
@@ -83,14 +92,14 @@
 
 .subtitle {
     color: #7A6954;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     font-style: italic;
 }
 
 .divider {
     height: 1px;
     background: linear-gradient(90deg, transparent, #B9A88F, transparent);
-    margin: 0 auto 16px;
+    margin: 0 auto 12px;
     width: 50%;
 }
 
@@ -98,45 +107,97 @@
     width: 100%;
 }
 
-.close-button {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    color: #5B4C3A;
-}
-
 .button-container {
-    padding-top: 4px; /* reducido para acercar el botón */
-    margin-top: 0; /* sin margen superior extra */
+    padding-top: 4px;
+    margin-top: 0;
     flex-shrink: 0;
 }
 
-.auth-btn {
-    margin: 0 auto;
-    background-color: #463c30;
-    color: white;
-    padding: 10px 16px;
-    border-radius: 6px;
+.auth-btn,
+.mat-raised-button,
+.login-method-btn,
+.unlock-btn {
+    background-color: #5B4C3A !important;
+    color: white !important;
+    font-family: 'Playfair Display', serif;
     font-size: 14px;
     font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-transform: none;
+    letter-spacing: 0.5px;
     width: 300px;
+    max-width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
+    box-shadow: 0 4px 12px rgba(91, 76, 58, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+
+/*BOTON DE GOOGLE*/
+.auth-btn.google-btn {
+    width: 300px;
+    max-width: 100%;
     font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-transform: none;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 12px rgba(91, 76, 58, 0.3);
+    background-color: #5B4C3A !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(91, 76, 58, 0.2);
+    cursor: pointer;
+
+    /* Hacemos flex para el contenido del botón */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    gap: 8px;
+
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.auth-btn:hover {
-    background-color: #907a62;
-    transform: translateY(-2px);
+.auth-btn.google-btn:hover {
+    background-color: #463c30 !important;
+    transform: translateY(-1px);
 }
 
-.auth-btn:disabled {
-    background-color: #B9A88F;
-    color: #5B4C3A;
+/* Ahora el div que contiene imagen y texto */
+.googleimage {
+    display: flex;             /* Flex horizontal */
+    align-items: center;       /* Centrar verticalmente */
+    gap: 8px;                  /* Espacio entre imagen y texto */
+}
+
+/* Estilo para la imagen */
+.googleimage img.google-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+
+
+.auth-btn:hover,
+.mat-raised-button:hover,
+.login-method-btn:hover,
+.unlock-btn:hover {
+    background-color: #463c30 !important;
+    transform: translateY(-1px);
+}
+
+.auth-btn:disabled,
+.mat-raised-button:disabled {
+    background-color: #B9A88F !important;
+    color: #5B4C3A !important;
     cursor: not-allowed;
 }
 
@@ -173,7 +234,7 @@
 }
 
 .login-options {
-    margin-top: 12px; /* reduce margen */
+    margin-top: 12px;
     text-align: center;
 }
 
@@ -247,6 +308,18 @@
 }
 
 @media (max-width: 600px) {
+    .auth-btn {
+        width: 100% !important;
+    }
+
+    .button-container {
+        padding: 0;
+    }
+
+    .form-group {
+        margin-bottom: 8px;
+    }
+
     .row-fields {
         flex-direction: column;
     }
@@ -326,3 +399,4 @@
 ::ng-deep .unlock-dialog .mat-input-element {
     caret-color: #5B4C3A !important;
 }
+

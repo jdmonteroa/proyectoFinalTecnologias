@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, UserCredential } from 'firebase/auth';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  UserCredential,
+  GoogleAuthProvider,
+  signInWithPopup
+} from 'firebase/auth';
 import { Auth } from '@angular/fire/auth';
 import { Observable, from } from 'rxjs';
 
@@ -25,9 +32,18 @@ export class FireauthService {
   }
 
   /**
+   * Login con Google
+   */
+  loginConGoogle(): Observable<UserCredential> {
+    const provider = new GoogleAuthProvider();
+    return from(signInWithPopup(this.auth, provider));
+  }
+
+  /**
    * Cerrar sesión
    */
   logout(): Observable<void> {
     return from(signOut(this.auth));
   }
 }
+

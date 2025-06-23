@@ -1,11 +1,19 @@
 <nav class="navbar">
-  <div class="navbar-container">
+  <div class="navbar-container" [class.open]="menuAbierto">
+
+    <!-- Botón hamburguesa -->
+    <button class="menu-btn" (click)="menuAbierto = !menuAbierto">
+      ☰
+    </button>
+
+    <!-- Navegación -->
     <ul class="nav-links">
       <li>
         <a routerLink="/home" routerLinkActive="active">
           <mat-icon fontIcon="home"></mat-icon>
         </a>
       </li>
+
       <li><a routerLink="/instalaciones" routerLinkActive="active">Instalaciones</a></li>
 
       @if (user$ | async; as user) {
@@ -14,14 +22,14 @@
           <li><a routerLink="/contact" routerLinkActive="active">Mensajes Clientes</a></li>
         } @else {
           <li><a routerLink="/reservaciones" routerLinkActive="active">Reservaciones</a></li>
-          <li><a routerLink="/acerca" routerLinkActive="active">Acerca de</a></li>
+          <li><a routerLink="/contacto" routerLinkActive="active">Contacto</a></li>
         }
       } @else {
         <li><a routerLink="/actividades" routerLinkActive="active">Actividades</a></li>
         <li><a routerLink="/acerca" routerLinkActive="active">Acerca de</a></li>
       }
 
-      <li><a routerLink="/desa">Desarrolladores</a></li>
+      <li><a routerLink="/desa" routerLinkActive="active">Desarrolladores</a></li>
     </ul>
 
     <!-- Accesibilidad -->
@@ -34,4 +42,3 @@
     </div>
   </div>
 </nav>
-

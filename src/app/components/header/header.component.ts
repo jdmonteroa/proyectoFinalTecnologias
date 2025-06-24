@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { InicioSesionComponent } from '../inicio-sesion/inicio-sesion.component';
-import { CommonModule } from '@angular/common';
+
 
 import Swal from 'sweetalert2';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,7 +12,7 @@ import { AuthService, UserInfo } from '../inicio-sesion/shared/auth.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule, CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
+  imports: [RouterModule, MatDialogModule, MatButtonModule, MatIconModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })

@@ -4,11 +4,11 @@ import { ContactoComponent } from '../contacto/contacto.component';
 import { CardsVisionComponent } from '../cards-vision/cards-vision.component';
 import { VideoComponent } from '../video/video.component';
 import { AuthService } from '../../../services/auth.service';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-acerca',
-  imports: [RouterOutlet,ContactoComponent,CardsVisionComponent, VideoComponent, CommonModule],
+  imports: [RouterOutlet, ContactoComponent, CardsVisionComponent, VideoComponent],
   templateUrl: './acerca.component.html',
   styleUrl: './acerca.component.css'
 })

@@ -8,14 +8,14 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { ReservasService } from '../../../../services/reservas.service';
-import { CommonModule } from '@angular/common';
+
 
 declare const paypal: any;
 
 @Component({
   selector: 'app-form-reactivo',
   standalone: true,
-  imports: [ReactiveFormsModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatButtonModule, CommonModule],
+  imports: [ReactiveFormsModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatButtonModule],
   templateUrl: './form-reactivo.component.html',
   styleUrls: ['./form-reactivo.component.css']
 })

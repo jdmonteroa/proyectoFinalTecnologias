@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NgChartsModule } from 'ng2-charts';
 import { ChartType, ChartConfiguration } from 'chart.js';
 import { ReservasService } from '../../../services/reservas.service';
@@ -8,7 +8,7 @@ import { Reserva } from '../../../services/reservas.service';
 @Component({
   selector: 'app-estadisticas-reservas',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [NgChartsModule],
   templateUrl: './estadisticas-reservas.component.html',
   styleUrls: ['./estadisticas-reservas.component.css']
 })

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,13 +13,12 @@ import { Contacto, ContactoService } from '../../../services/contacto.service';
   selector: 'app-lista-contactos',
   standalone: true,
   imports: [
-    CommonModule,
     MatTableModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
     FormsModule
-  ],
+],
   templateUrl: './lista-contactos.component.html',
   styleUrl: './lista-contactos.component.css'
 })

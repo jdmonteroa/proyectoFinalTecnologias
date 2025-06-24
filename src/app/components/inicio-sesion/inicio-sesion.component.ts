@@ -16,7 +16,7 @@ import { FireauthService } from './shared/fireauth.service';
 import { MatSelectModule } from '@angular/material/select';
 import { updateProfile } from 'firebase/auth';
 import { ConfirmationResult } from 'firebase/auth';
-import { CommonModule } from '@angular/common';
+
 
 
 @Component({
@@ -30,8 +30,9 @@ import { CommonModule } from '@angular/common';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatSelectModule, CommonModule, ReactiveFormsModule
-  ],
+    MatSelectModule,
+    ReactiveFormsModule
+],
   templateUrl: './inicio-sesion.component.html',
   styleUrl: './inicio-sesion.component.css'
 })

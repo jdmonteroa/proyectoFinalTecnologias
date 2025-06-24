@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
 import { ChartType, ChartConfiguration } from 'chart.js';
 import { ReservasService, Reserva } from '../../../services/reservas.service';
@@ -7,7 +7,7 @@ import { ReservasService, Reserva } from '../../../services/reservas.service';
 @Component({
   selector: 'app-estadisticas-habitaciones',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [NgChartsModule],
   templateUrl: './estadisticas-habitaciones.component.html',
   styleUrls: ['./estadisticas-habitaciones.component.css']
 })

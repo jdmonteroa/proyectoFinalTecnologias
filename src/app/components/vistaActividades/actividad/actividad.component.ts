@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { HttpClientModule } from '@angular/common/http';
 import { Actividades } from '../actividades';
 import { ActividadesService } from '../actividades.service';
@@ -8,7 +8,7 @@ import { ActividadesService } from '../actividades.service';
 @Component({
   selector: 'app-actividad',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, RouterModule],
+  imports: [HttpClientModule, RouterModule],
   templateUrl: './actividad.component.html',
   styleUrl: './actividad.component.css'
 })

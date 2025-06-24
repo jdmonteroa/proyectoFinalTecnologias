@@ -144,15 +144,6 @@ export class InicioSesionComponent implements OnInit {
       return;
     }
 
-    if (!this.captchaToken) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Verificación requerida',
-        text: 'Por favor completa el reCAPTCHA para continuar.'
-      });
-      return;
-    }
-
     this.fireAuth.loginUsuario(emailTrimmed, passwordTrimmed).subscribe({
       next: (cred) => {
         const nombreUsuario = cred.user.displayName || 'Usuario';

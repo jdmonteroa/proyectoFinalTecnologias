@@ -178,13 +178,8 @@
                     @if (userPasswordCtrl.invalid && userPasswordCtrl.touched) {
                     <mat-error>La contraseña es obligatoria</mat-error>
                     }
-                    
+
                 </mat-form-field>
-                @if (userEmail && userPassword) {
-    <div class="form-group">
-      <div id="g-recaptcha" class="g-recaptcha"></div>
-    </div>
-  }
                 <div class="button-container">
                     <button mat-raised-button color="primary" type="submit" class="auth-btn"
                         [disabled]="!userLoginForm.form.valid">
@@ -201,7 +196,7 @@
             <div id="recaptcha-container"></div>
 
             <!-- Formulario para enviar código -->
-            <form  #smsForm="ngForm">
+            <form #smsForm="ngForm">
                 <mat-form-field appearance="outline" class="form-group">
                     <mat-label>Teléfono</mat-label>
                     <input matInput [(ngModel)]="telefono" name="telefono" required>

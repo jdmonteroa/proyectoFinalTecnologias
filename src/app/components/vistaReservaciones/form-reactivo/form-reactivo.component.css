@@ -99,7 +99,7 @@ mat-error {
 /* -------- Angular Material Compacto y Colores -------- */
 .mat-mdc-form-field {
     font-size: 15px;
-    --mdc-typography-body1-font-size: 13px;
+    --mat-typography-body1-font-size: 13px;
 }
 
 .mat-mdc-text-field-wrapper {

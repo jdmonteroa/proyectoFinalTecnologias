@@ -22,41 +22,54 @@ export class AdminService {
 
   constructor(private http: HttpClient) { }
 
+  
   login(payload: { nombre: string, usuario: string, password: string }): Observable<AdminLoginResponse> {
-    return this.http.post<AdminLoginResponse>(`${this.apiUrl}/login-superusuario`, payload).pipe(
-      map(response => {
-        if (response.bloqueado) {
-          throw { 
-            error: { 
-              bloqueado: true, 
-              intentosFallidos: response.intentosFallidos,
-              email: response.email
-            } 
-          };
+  return this.http.post<AdminLoginResponse>(`${this.apiUrl}/login-superusuario`, payload).pipe(
+    map(response => {
+      if (response.bloqueado) {
+        throw { 
+          error: { 
+            bloqueado: true, 
+            intentosFallidos: response.intentosFallidos,
+            email: response.email
+          } 
+        };
+      }
+      return response;
+    }),
+    catchError(error => {
+      const yaBloqueado = error.error?.bloqueado;
+
+      if (yaBloqueado) {
+        this.mostrarAlertaBloqueo(error.error.intentosFallidos, payload.usuario, error.error.email);
+      } else if (error.error?.error === 'Credenciales incorrectas' || error.status === 401) {
+        const intentos = error.error?.intentosFallidos || 0;
+
+        // Solo mostrar si aún no está bloqueado
+        if (intentos < 3) {
+          this.manejarIntentoFallido(payload.usuario, intentos);
         }
-        return response;
-      }),
-      catchError(error => {
-        if (error.error?.bloqueado) {
-          this.mostrarAlertaBloqueo(error.error.intentosFallidos, payload.usuario, error.error.email);
-        } 
-        else if (error.error?.error === 'Credenciales incorrectas' || error.status === 401) {
-          this.manejarIntentoFallido(payload.usuario, error.error.intentosFallidos);
-        }
-        return throwError(error);
-      })
-    );
-  }
-  // En tu admin.service.ts, añade este nuevo método
+      }
+
+      return throwError(() => error); 
+    })
+  );
+}
+
   getUserEmail(username: string): Observable<string> {
-    return this.http.get<{email: string}>(`${this.apiUrl}/get-user-email?usuario=${username}`).pipe(
-      map(response => response.email),
-      catchError(error => {
-        console.error('Error al obtener email:', error);
-        return throwError(error);
-      })
-    );
-  }
+  return this.http.get<{email: string}>(`${this.apiUrl}/get-user-email?usuario=${username}`).pipe(
+    map(response => {
+      if (!response || !response.email) {
+        throw new Error('Email no encontrado en la respuesta');
+      }
+      return response.email;
+    }),
+    catchError(error => {
+      console.error('Error detallado al obtener email:', error);
+      return throwError(() => new Error('No se pudo obtener el email del usuario'));
+    })
+  );
+}
 
   private mostrarAlertaBloqueo(intentosFallidos: number, username: string, email: string): void {
     Swal.fire({

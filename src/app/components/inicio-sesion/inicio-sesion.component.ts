@@ -191,9 +191,6 @@ export class InicioSesionComponent implements OnInit {
     });
   }
 
-  // Aquí se mantienen los demás métodos sin cambios...
-  // onRegister(), onSubmit(), showUnlockAccountDialog(), etc.
-
   closeDialog(): void {
     this.dialogRef.close();
   }
@@ -278,32 +275,46 @@ export class InicioSesionComponent implements OnInit {
       },
       error: (err) => {
         if (err.error?.bloqueado) {
-          this.isAccountLocked = true;
-          this.loginAttempts = this.maxAttempts;
-          Swal.fire({
-            icon: 'error',
-            title: 'Cuenta bloqueada',
-            text: 'Tu cuenta ha sido bloqueada por intentos fallidos. Revisa tu correo para recuperarla.',
-            background: '#fffaf3',
-            color: '#5B4C3A',
-            iconColor: '#B23B3B',
-            confirmButtonColor: '#A9745D',
-            confirmButtonText: 'Entendido'
-          });
-        } else if (err.status === 401) {
-          this.loginAttempts = err.error?.intentosFallidos || this.loginAttempts + 1;
+        // Cuando la cuenta ya está bloqueada
+        this.isAccountLocked = true;
+        this.loginAttempts = this.maxAttempts; // Fijar en el máximo
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'Cuenta bloqueada',
+          text: 'Tu cuenta ha sido bloqueada por intentos fallidos. Revisa tu correo para recuperarla.',
+          background: '#fffaf3',
+          color: '#5B4C3A',
+          iconColor: '#B23B3B',
+          confirmButtonColor: '#A9745D',
+          confirmButtonText: 'Entendido'
+        });
+      } else if (err.status === 401) {
+        // Solo actualizar intentos si la cuenta no está bloqueada
+        if (!this.isAccountLocked) {
+          this.loginAttempts = Math.min(
+            err.error?.intentosFallidos || this.loginAttempts + 1,
+            this.maxAttempts
+          );
+          
           const intentosRestantes = this.maxAttempts - this.loginAttempts;
-          if (intentosRestantes <= 0) this.isAccountLocked = true;
+          
+          if (intentosRestantes <= 0) {
+            this.isAccountLocked = true;
+            this.loginAttempts = this.maxAttempts; // Fijar en el máximo
+          }
+          
           Swal.fire({
             icon: 'warning',
             title: 'Credenciales incorrectas',
-            text: `Intentos restantes: ${intentosRestantes}`,
+            text: `Intentos restantes: ${intentosRestantes > 0 ? intentosRestantes : 0}`,
             background: '#fffaf3',
             color: '#5B4C3A',
             iconColor: '#FFA500',
             confirmButtonColor: '#A9745D',
             confirmButtonText: 'Intentar nuevamente'
           });
+        }
         } else {
           Swal.fire({
             icon: 'error',
@@ -360,6 +371,7 @@ export class InicioSesionComponent implements OnInit {
           if (result.isConfirmed && result.value) {
             this.adminService.unlockAccount(this.username.trim(), result.value.newPassword).subscribe({
               next: () => {
+                
                 this.isAccountLocked = false;
                 this.loginAttempts = 0;
                 Swal.fire({
@@ -374,6 +386,8 @@ export class InicioSesionComponent implements OnInit {
                 });
               },
               error: () => {
+                  this.isAccountLocked = true;
+                  this.loginAttempts = this.maxAttempts;
                 Swal.fire({
                   title: 'Error',
                   text: 'Ocurrió un error al cambiar la contraseña. Intenta nuevamente.',
